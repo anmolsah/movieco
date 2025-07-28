@@ -9,16 +9,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
           {/* Brand Section */}
           <div className="text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start gap-2 mb-3">
-              <button className="flex items-center gap-2 p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors duration-200">
-                <img
-                  src={logo}
-                  alt="logo"
-                  className="w-6 h-6 rounded-full border border-slate-600"
-                />
-              </button>
-              <h3 className="text-xl font-bold text-white">CineAI</h3>
-            </div>
+            <img className="w-60 h-48" src="./logo5.png" />
             <p className="text-slate-400 text-sm">
               Discover your next favorite movie with AI-powered recommendations
             </p>
