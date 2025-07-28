@@ -1,5 +1,6 @@
-import React from 'react';
-import { Heart, Github, Linkedin, Film } from 'lucide-react';
+import React from "react";
+import { Heart, Github, Linkedin, Film } from "lucide-react";
+import logo from "../assets/logo5.png";
 
 const Footer = () => {
   return (
@@ -9,9 +10,13 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-2 mb-3">
-              <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-2 rounded-lg">
-                <Film className="w-6 h-6 text-white" />
-              </div>
+              <button className="flex items-center gap-2 p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors duration-200">
+                <img
+                  src={logo}
+                  alt="logo"
+                  className="w-6 h-6 rounded-full border border-slate-600"
+                />
+              </button>
               <h3 className="text-xl font-bold text-white">CineAI</h3>
             </div>
             <p className="text-slate-400 text-sm">
@@ -60,9 +65,9 @@ const Footer = () => {
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-400">
           <div className="flex items-center gap-4">
-            <span>&copy; 2024 CineAI. All rights reserved.</span>
+            <span>&copy; 2025 Movieco. All rights reserved.</span>
           </div>
-          
+
           <div className="flex items-center gap-6">
             <span className="text-xs">Powered by TMDB API</span>
             <div className="flex items-center gap-1">
