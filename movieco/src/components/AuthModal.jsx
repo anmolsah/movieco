@@ -13,7 +13,7 @@ import {
 import AuthService from "../services/authService.js";
 
 const AuthModal = ({ isOpen, onClose, onSuccess }) => {
-  const [mode, setMode] = useState("signin"); // 'signin', 'signup', 'forgot'
+  const [mode, setMode] = useState("signin");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -113,26 +113,6 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    setLoading(true);
-    setError("");
-
-    try {
-      const result = await AuthService.signInWithGoogle();
-      if (result.error) {
-        setError(result.error);
-      } else {
-        // Google OAuth will redirect, so we don't need to handle success here
-        setSuccess("Redirecting to Google...");
-      }
-    } catch (error) {
-      setError("Google sign-in failed. Please try again.");
-      console.error("Google sign-in error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const resetForm = () => {
     setFormData({
       email: "",
@@ -193,18 +173,6 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
         {error && (
           <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 mb-6">
             <p className="text-red-400 text-sm">{error}</p>
-          </div>
-        )}
-
-        {/* Divider */}
-        {mode !== "forgot" && (
-          <div className="relative mb-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-700"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-slate-900 text-slate-400">or</span>
-            </div>
           </div>
         )}
 
