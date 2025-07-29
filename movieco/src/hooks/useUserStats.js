@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import UserStatsService from '../services/userStatsService.js';
+import { useState, useEffect } from "react";
+import UserStatsService from "../services/userStatsService.js";
 
 export const useUserStats = (user, watchlist) => {
   const [userStats, setUserStats] = useState(null);
@@ -19,21 +19,31 @@ export const useUserStats = (user, watchlist) => {
   // Update watchlist count when watchlist changes
   useEffect(() => {
     if (user && userStats) {
-      const updatedStats = UserStatsService.updateWatchlistCount(user.id, watchlist.length);
+      const updatedStats = UserStatsService.updateWatchlistCount(
+        user.id,
+        watchlist.length
+      );
       setUserStats(updatedStats);
     }
   }, [user, watchlist.length, userStats]);
 
   const addMovieToWatchHistory = (movie) => {
     if (user) {
-      const updatedStats = UserStatsService.addMovieToWatchHistory(user.id, movie);
+      const updatedStats = UserStatsService.addMovieToWatchHistory(
+        user.id,
+        movie
+      );
       setUserStats(updatedStats);
     }
   };
 
   const rateMovie = (movieId, rating) => {
     if (user) {
-      const updatedStats = UserStatsService.addMovieRating(user.id, movieId, rating);
+      const updatedStats = UserStatsService.addMovieRating(
+        user.id,
+        movieId,
+        rating
+      );
       setUserStats(updatedStats);
       return updatedStats;
     }
@@ -59,6 +69,6 @@ export const useUserStats = (user, watchlist) => {
     addMovieToWatchHistory,
     rateMovie,
     getTopGenres,
-    getRecentlyWatched
+    getRecentlyWatched,
   };
 };

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Play, Star, Calendar, Info } from 'lucide-react';
-import { getImageUrl } from '../config/api.js';
+import React, { useEffect, useState } from "react";
+import { Play, Star, Calendar, Info } from "lucide-react";
+import { getImageUrl } from "../config/api.js";
 
 const HeroSection = ({ featuredMovie, onMovieClick }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -29,10 +29,10 @@ const HeroSection = ({ featuredMovie, onMovieClick }) => {
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
-          src={getImageUrl(featuredMovie.backdrop_path, 'w1280')}
+          src={getImageUrl(featuredMovie.backdrop_path, "w1280")}
           alt={featuredMovie.title}
           className={`w-full h-full object-cover transition-all duration-1000 ${
-            imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+            imageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-105"
           }`}
           onLoad={() => setImageLoaded(true)}
         />
@@ -47,7 +47,9 @@ const HeroSection = ({ featuredMovie, onMovieClick }) => {
             {/* Category Badge */}
             <div className="inline-flex items-center gap-2 bg-purple-600/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4">
               <Star className="w-4 h-4 text-yellow-400 fill-current" />
-              <span className="text-yellow-400 font-medium">Featured Movie</span>
+              <span className="text-yellow-400 font-medium">
+                Featured Movie
+              </span>
             </div>
 
             {/* Title */}
@@ -59,14 +61,18 @@ const HeroSection = ({ featuredMovie, onMovieClick }) => {
             <div className="flex items-center gap-6 mb-6 text-slate-300">
               <div className="flex items-center gap-2">
                 <Star className="w-5 h-5 text-yellow-400 fill-current" />
-                <span className="font-medium">{featuredMovie.vote_average?.toFixed(1)}</span>
+                <span className="font-medium">
+                  {featuredMovie.vote_average?.toFixed(1)}
+                </span>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <Calendar className="w-5 h-5" />
-                <span>{new Date(featuredMovie.release_date).getFullYear()}</span>
+                <span>
+                  {new Date(featuredMovie.release_date).getFullYear()}
+                </span>
               </div>
-              
+
               <div className="bg-slate-700/50 backdrop-blur-sm px-3 py-1 rounded-full">
                 <span className="text-sm font-medium">HD</span>
               </div>
@@ -74,8 +80,8 @@ const HeroSection = ({ featuredMovie, onMovieClick }) => {
 
             {/* Description */}
             <p className="text-slate-200 text-lg mb-8 leading-relaxed max-w-xl">
-              {featuredMovie.overview?.length > 200 
-                ? `${featuredMovie.overview.substring(0, 200)}...` 
+              {featuredMovie.overview?.length > 200
+                ? `${featuredMovie.overview.substring(0, 200)}...`
                 : featuredMovie.overview}
             </p>
 
@@ -88,7 +94,7 @@ const HeroSection = ({ featuredMovie, onMovieClick }) => {
                 <Play className="w-5 h-5 fill-current" />
                 Watch Now
               </button>
-              
+
               <button
                 onClick={() => onMovieClick(featuredMovie)}
                 className="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-8 py-4 rounded-xl font-semibold flex items-center gap-3 transition-all duration-200 border border-white/20 hover:border-white/40"

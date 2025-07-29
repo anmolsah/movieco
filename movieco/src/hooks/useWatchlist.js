@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import AuthService from '../services/authService.js';
+import { useState, useEffect } from "react";
+import AuthService from "../services/authService.js";
 
 export const useWatchlist = (user, isAuthenticated) => {
   const [watchlist, setWatchlist] = useState([]);
@@ -22,19 +22,19 @@ export const useWatchlist = (user, isAuthenticated) => {
       return false; // Indicate auth required
     }
 
-    const isAlreadyInWatchlist = watchlist.some(w => w.id === movie.id);
-    
+    const isAlreadyInWatchlist = watchlist.some((w) => w.id === movie.id);
+
     let newWatchlist;
     if (isAlreadyInWatchlist) {
-      newWatchlist = watchlist.filter(w => w.id !== movie.id);
+      newWatchlist = watchlist.filter((w) => w.id !== movie.id);
     } else {
       newWatchlist = [...watchlist, movie];
     }
-    
+
     setWatchlist(newWatchlist);
-    
+
     // Save watchlist with user ID to keep it separate per user
-    const storageKey = user ? `movieWatchlist_${user.id}` : 'movieWatchlist';
+    const storageKey = user ? `movieWatchlist_${user.id}` : "movieWatchlist";
     localStorage.setItem(storageKey, JSON.stringify(newWatchlist));
 
     return true; // Success
@@ -42,6 +42,6 @@ export const useWatchlist = (user, isAuthenticated) => {
 
   return {
     watchlist,
-    addToWatchlist
+    addToWatchlist,
   };
 };

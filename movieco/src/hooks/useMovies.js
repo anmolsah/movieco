@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import MovieService from '../services/movieService.js';
+import { useState, useEffect } from "react";
+import MovieService from "../services/movieService.js";
 
 export const useMovies = () => {
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
@@ -9,14 +9,14 @@ export const useMovies = () => {
   const [allMovies, setAllMovies] = useState([]);
   const [genres, setGenres] = useState([]);
   const [featuredMovie, setFeaturedMovie] = useState(null);
-  
+
   const [loading, setLoading] = useState({
     nowPlaying: true,
     upcoming: true,
     popular: true,
     topRated: true,
     search: false,
-    ai: false
+    ai: false,
   });
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export const useMovies = () => {
           MovieService.getNowPlaying(),
           MovieService.getUpcoming(),
           MovieService.getPopular(),
-          MovieService.getTopRated()
+          MovieService.getTopRated(),
         ]);
 
         setNowPlayingMovies(nowPlaying.results || []);
@@ -44,19 +44,21 @@ export const useMovies = () => {
           ...(nowPlaying.results || []),
           ...(upcoming.results || []),
           ...(popular.results || []),
-          ...(topRated.results || [])
+          ...(topRated.results || []),
         ];
-        
+
         // Remove duplicates based on movie ID
-        const uniqueMovies = combined.filter((movie, index, self) => 
-          index === self.findIndex(m => m.id === movie.id)
+        const uniqueMovies = combined.filter(
+          (movie, index, self) =>
+            index === self.findIndex((m) => m.id === movie.id)
         );
         setAllMovies(uniqueMovies);
 
         // Set featured movie (highest rated from popular)
         if (popular.results && popular.results.length > 0) {
-          const featured = popular.results
-            .sort((a, b) => b.vote_average - a.vote_average)[0];
+          const featured = popular.results.sort(
+            (a, b) => b.vote_average - a.vote_average
+          )[0];
           setFeaturedMovie(featured);
         }
 
@@ -67,18 +69,17 @@ export const useMovies = () => {
           popular: false,
           topRated: false,
           search: false,
-          ai: false
+          ai: false,
         });
-        
       } catch (error) {
-        console.error('Failed to load initial data:', error);
+        console.error("Failed to load initial data:", error);
         setLoading({
           nowPlaying: false,
           upcoming: false,
           popular: false,
           topRated: false,
           search: false,
-          ai: false
+          ai: false,
         });
       }
     };
@@ -87,7 +88,7 @@ export const useMovies = () => {
   }, []);
 
   const updateLoadingState = (key, value) => {
-    setLoading(prev => ({ ...prev, [key]: value }));
+    setLoading((prev) => ({ ...prev, [key]: value }));
   };
 
   return {
@@ -99,6 +100,6 @@ export const useMovies = () => {
     genres,
     featuredMovie,
     loading,
-    updateLoadingState
+    updateLoadingState,
   };
 };

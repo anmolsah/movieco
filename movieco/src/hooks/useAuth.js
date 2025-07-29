@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import AuthService from '../services/authService.js';
+import { useState, useEffect } from "react";
+import AuthService from "../services/authService.js";
 
 export const useAuth = () => {
   const [user, setUser] = useState(null);
@@ -11,10 +11,12 @@ export const useAuth = () => {
     setIsAuthenticated(AuthService.isUserAuthenticated());
 
     // Listen for auth state changes
-    const unsubscribe = AuthService.onAuthStateChanged((user, authenticated) => {
-      setUser(user);
-      setIsAuthenticated(authenticated);
-    });
+    const unsubscribe = AuthService.onAuthStateChanged(
+      (user, authenticated) => {
+        setUser(user);
+        setIsAuthenticated(authenticated);
+      }
+    );
 
     return unsubscribe;
   }, []);
@@ -29,6 +31,6 @@ export const useAuth = () => {
   return {
     user,
     isAuthenticated,
-    checkAuthForWatchlist
+    checkAuthForWatchlist,
   };
 };

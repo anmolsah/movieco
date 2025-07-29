@@ -1,55 +1,65 @@
-import React, { useState } from 'react';
-import { X, Mail, Shield, Star, Sparkles, Eye, EyeOff, User, ArrowLeft } from 'lucide-react';
-import AuthService from '../services/authService.js';
+import React, { useState } from "react";
+import {
+  X,
+  Mail,
+  Shield,
+  Star,
+  Sparkles,
+  Eye,
+  EyeOff,
+  User,
+  ArrowLeft,
+} from "lucide-react";
+import AuthService from "../services/authService.js";
 
 const AuthModal = ({ isOpen, onClose, onSuccess }) => {
-  const [mode, setMode] = useState('signin'); // 'signin', 'signup', 'forgot'
+  const [mode, setMode] = useState("signin"); // 'signin', 'signup', 'forgot'
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    fullName: ''
+    email: "",
+    password: "",
+    confirmPassword: "",
+    fullName: "",
   });
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
-    setError(''); // Clear error when user types
+    setError(""); // Clear error when user types
   };
 
   const validateForm = () => {
     if (!formData.email) {
-      setError('Email is required');
-      return false;
-    }
-    
-    if (!formData.email.includes('@')) {
-      setError('Please enter a valid email address');
+      setError("Email is required");
       return false;
     }
 
-    if (mode !== 'forgot') {
+    if (!formData.email.includes("@")) {
+      setError("Please enter a valid email address");
+      return false;
+    }
+
+    if (mode !== "forgot") {
       if (!formData.password) {
-        setError('Password is required');
+        setError("Password is required");
         return false;
       }
-      
+
       if (formData.password.length < 6) {
-        setError('Password must be at least 6 characters');
+        setError("Password must be at least 6 characters");
         return false;
       }
     }
 
-    if (mode === 'signup') {
+    if (mode === "signup") {
       if (formData.password !== formData.confirmPassword) {
-        setError('Passwords do not match');
+        setError("Passwords do not match");
         return false;
       }
     }
@@ -59,38 +69,45 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
 
   const handleEmailAuth = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setLoading(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     try {
       let result;
-      
-      if (mode === 'signin') {
-        result = await AuthService.signInWithEmail(formData.email, formData.password);
-      } else if (mode === 'signup') {
-        result = await AuthService.signUp(formData.email, formData.password, formData.fullName);
-      } else if (mode === 'forgot') {
+
+      if (mode === "signin") {
+        result = await AuthService.signInWithEmail(
+          formData.email,
+          formData.password
+        );
+      } else if (mode === "signup") {
+        result = await AuthService.signUp(
+          formData.email,
+          formData.password,
+          formData.fullName
+        );
+      } else if (mode === "forgot") {
         result = await AuthService.resetPassword(formData.email);
         if (!result.error) {
-          setSuccess('Password reset email sent! Check your inbox.');
+          setSuccess("Password reset email sent! Check your inbox.");
           return;
         }
       }
 
       if (result.error) {
         setError(result.error);
-      } else if (result.user || mode === 'forgot') {
+      } else if (result.user || mode === "forgot") {
         // For both signin and signup, redirect to home page
         onSuccess();
         onClose();
       }
     } catch (error) {
-      setError('An unexpected error occurred. Please try again.');
-      console.error('Auth error:', error);
+      setError("An unexpected error occurred. Please try again.");
+      console.error("Auth error:", error);
     } finally {
       setLoading(false);
     }
@@ -98,19 +115,19 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
-    setError('');
-    
+    setError("");
+
     try {
       const result = await AuthService.signInWithGoogle();
       if (result.error) {
         setError(result.error);
       } else {
         // Google OAuth will redirect, so we don't need to handle success here
-        setSuccess('Redirecting to Google...');
+        setSuccess("Redirecting to Google...");
       }
     } catch (error) {
-      setError('Google sign-in failed. Please try again.');
-      console.error('Google sign-in error:', error);
+      setError("Google sign-in failed. Please try again.");
+      console.error("Google sign-in error:", error);
     } finally {
       setLoading(false);
     }
@@ -118,13 +135,13 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
 
   const resetForm = () => {
     setFormData({
-      email: '',
-      password: '',
-      confirmPassword: '',
-      fullName: ''
+      email: "",
+      password: "",
+      confirmPassword: "",
+      fullName: "",
     });
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
   };
 
   const switchMode = (newMode) => {
@@ -151,14 +168,17 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
             <Sparkles className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-white mb-2">
-            {mode === 'signin' && 'Welcome Back'}
-            {mode === 'signup' && 'Create Account'}
-            {mode === 'forgot' && 'Reset Password'}
+            {mode === "signin" && "Welcome Back"}
+            {mode === "signup" && "Create Account"}
+            {mode === "forgot" && "Reset Password"}
           </h2>
           <p className="text-slate-400">
-            {mode === 'signin' && 'Sign in to access your personalized movie recommendations'}
-            {mode === 'signup' && 'Join CineAI to discover your next favorite movie'}
-            {mode === 'forgot' && 'Enter your email to receive a password reset link'}
+            {mode === "signin" &&
+              "Sign in to access your personalized movie recommendations"}
+            {mode === "signup" &&
+              "Join CineAI to discover your next favorite movie"}
+            {mode === "forgot" &&
+              "Enter your email to receive a password reset link"}
           </p>
         </div>
 
@@ -176,9 +196,8 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
           </div>
         )}
 
-
         {/* Divider */}
-        {mode !== 'forgot' && (
+        {mode !== "forgot" && (
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-700"></div>
@@ -192,7 +211,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
         {/* Email Form */}
         <form onSubmit={handleEmailAuth} className="space-y-4">
           {/* Full Name (Sign Up Only) */}
-          {mode === 'signup' && (
+          {mode === "signup" && (
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-2">
                 Full Name
@@ -231,7 +250,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
           </div>
 
           {/* Password */}
-          {mode !== 'forgot' && (
+          {mode !== "forgot" && (
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-2">
                 Password
@@ -239,7 +258,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
               <div className="relative">
                 <Shield className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
@@ -252,14 +271,18 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </div>
           )}
 
           {/* Confirm Password (Sign Up Only) */}
-          {mode === 'signup' && (
+          {mode === "signup" && (
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-2">
                 Confirm Password
@@ -267,7 +290,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
               <div className="relative">
                 <Shield className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
@@ -288,15 +311,15 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
             {loading ? (
               <div className="flex items-center justify-center gap-2">
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                {mode === 'signin' && 'Signing In...'}
-                {mode === 'signup' && 'Creating Account...'}
-                {mode === 'forgot' && 'Sending Email...'}
+                {mode === "signin" && "Signing In..."}
+                {mode === "signup" && "Creating Account..."}
+                {mode === "forgot" && "Sending Email..."}
               </div>
             ) : (
               <>
-                {mode === 'signin' && 'Sign In'}
-                {mode === 'signup' && 'Create Account'}
-                {mode === 'forgot' && 'Send Reset Email'}
+                {mode === "signin" && "Sign In"}
+                {mode === "signup" && "Create Account"}
+                {mode === "forgot" && "Send Reset Email"}
               </>
             )}
           </button>
@@ -304,12 +327,12 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
 
         {/* Mode Switching */}
         <div className="mt-6 text-center space-y-2">
-          {mode === 'signin' && (
+          {mode === "signin" && (
             <>
               <p className="text-slate-400 text-sm">
-                Don't have an account?{' '}
+                Don't have an account?{" "}
                 <button
-                  onClick={() => switchMode('signup')}
+                  onClick={() => switchMode("signup")}
                   className="text-purple-400 hover:text-purple-300 font-medium"
                 >
                   Sign up
@@ -317,7 +340,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
               </p>
               <p className="text-slate-400 text-sm">
                 <button
-                  onClick={() => switchMode('forgot')}
+                  onClick={() => switchMode("forgot")}
                   className="text-purple-400 hover:text-purple-300 font-medium"
                 >
                   Forgot your password?
@@ -325,22 +348,22 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
               </p>
             </>
           )}
-          
-          {mode === 'signup' && (
+
+          {mode === "signup" && (
             <p className="text-slate-400 text-sm">
-              Already have an account?{' '}
+              Already have an account?{" "}
               <button
-                onClick={() => switchMode('signin')}
+                onClick={() => switchMode("signin")}
                 className="text-purple-400 hover:text-purple-300 font-medium"
               >
                 Sign in
               </button>
             </p>
           )}
-          
-          {mode === 'forgot' && (
+
+          {mode === "forgot" && (
             <button
-              onClick={() => switchMode('signin')}
+              onClick={() => switchMode("signin")}
               className="flex items-center justify-center gap-2 text-purple-400 hover:text-purple-300 font-medium mx-auto"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -350,7 +373,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
         </div>
 
         {/* Features (Sign Up Only) */}
-        {mode === 'signup' && (
+        {mode === "signup" && (
           <div className="mt-8 space-y-3">
             <div className="flex items-center gap-3 text-slate-300">
               <Star className="w-4 h-4 text-yellow-400" />
@@ -369,7 +392,8 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
 
         {/* Terms */}
         <p className="text-xs text-slate-500 text-center mt-6">
-          By {mode === 'signup' ? 'creating an account' : 'signing in'}, you agree to our Terms of Service and Privacy Policy
+          By {mode === "signup" ? "creating an account" : "signing in"}, you
+          agree to our Terms of Service and Privacy Policy
         </p>
       </div>
     </div>

@@ -1,18 +1,27 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Sparkles, Lightbulb, X, Loader } from 'lucide-react';
-import AIMovieBot from '../services/aiMovieBot.js';
-import MovieCard from './MovieCard.jsx';
+import React, { useState, useRef, useEffect } from "react";
+import { Send, Bot, User, Sparkles, Lightbulb, X, Loader } from "lucide-react";
+import AIMovieBot from "../services/aiMovieBot.js";
+import MovieCard from "./MovieCard.jsx";
 
-const AIMovieBotComponent = ({ isOpen, onClose, moviePool, onMovieClick, onAddToWatchlist, watchlist, onAuthRequired }) => {
+const AIMovieBotComponent = ({
+  isOpen,
+  onClose,
+  moviePool,
+  onMovieClick,
+  onAddToWatchlist,
+  watchlist,
+  onAuthRequired,
+}) => {
   const [messages, setMessages] = useState([
     {
       id: 1,
-      type: 'bot',
-      content: "Hi! I'm your AI movie discovery assistant. Tell me what you're in the mood for and I'll find the perfect movies for you!",
-      timestamp: new Date()
-    }
+      type: "bot",
+      content:
+        "Hi! I'm your AI movie discovery assistant. Tell me what you're in the mood for and I'll find the perfect movies for you!",
+      timestamp: new Date(),
+    },
   ]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [suggestions] = useState(AIMovieBot.getQuickSuggestions());
   const messagesEndRef = useRef(null);
@@ -29,7 +38,7 @@ const AIMovieBotComponent = ({ isOpen, onClose, moviePool, onMovieClick, onAddTo
   }, [messages]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleSend = async () => {
@@ -37,46 +46,47 @@ const AIMovieBotComponent = ({ isOpen, onClose, moviePool, onMovieClick, onAddTo
 
     const userMessage = {
       id: Date.now(),
-      type: 'user',
+      type: "user",
       content: input.trim(),
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
     setIsLoading(true);
 
     try {
       // Analyze user input
       const analysis = await AIMovieBot.analyzeUserInput(input.trim());
-      
+
       // Find movies based on analysis
       const results = await AIMovieBot.findMovies(analysis, moviePool);
-      
+
       // Generate explanation
       const explanation = AIMovieBot.generateExplanation(analysis, results);
 
       const botMessage = {
         id: Date.now() + 1,
-        type: 'bot',
+        type: "bot",
         content: explanation,
         movies: results.movies.slice(0, 8), // Show top 8 results
         analysis: analysis,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
 
-      setMessages(prev => [...prev, botMessage]);
+      setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      console.error('Bot error:', error);
-      
+      console.error("Bot error:", error);
+
       const errorMessage = {
         id: Date.now() + 1,
-        type: 'bot',
-        content: "I'm having trouble processing your request right now. Please try again or use simpler terms like 'funny movies' or 'action films'.",
-        timestamp: new Date()
+        type: "bot",
+        content:
+          "I'm having trouble processing your request right now. Please try again or use simpler terms like 'funny movies' or 'action films'.",
+        timestamp: new Date(),
       };
 
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -90,7 +100,7 @@ const AIMovieBotComponent = ({ isOpen, onClose, moviePool, onMovieClick, onAddTo
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
@@ -108,7 +118,9 @@ const AIMovieBotComponent = ({ isOpen, onClose, moviePool, onMovieClick, onAddTo
               <Bot className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">AI Movie Discovery</h2>
+              <h2 className="text-xl font-bold text-white">
+                AI Movie Discovery
+              </h2>
               <p className="text-sm text-slate-400">Powered by advanced AI</p>
             </div>
           </div>
@@ -123,22 +135,33 @@ const AIMovieBotComponent = ({ isOpen, onClose, moviePool, onMovieClick, onAddTo
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
           {messages.map((message) => (
-            <div key={message.id} className={`flex gap-3 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-              {message.type === 'bot' && (
+            <div
+              key={message.id}
+              className={`flex gap-3 ${
+                message.type === "user" ? "justify-end" : "justify-start"
+              }`}
+            >
+              {message.type === "bot" && (
                 <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-2 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
                   <Bot className="w-4 h-4 text-white" />
                 </div>
               )}
-              
-              <div className={`max-w-[80%] ${message.type === 'user' ? 'order-1' : ''}`}>
-                <div className={`rounded-2xl p-4 ${
-                  message.type === 'user' 
-                    ? 'bg-purple-600 text-white ml-auto' 
-                    : 'bg-slate-800 text-slate-200'
-                }`}>
+
+              <div
+                className={`max-w-[80%] ${
+                  message.type === "user" ? "order-1" : ""
+                }`}
+              >
+                <div
+                  className={`rounded-2xl p-4 ${
+                    message.type === "user"
+                      ? "bg-purple-600 text-white ml-auto"
+                      : "bg-slate-800 text-slate-200"
+                  }`}
+                >
                   <p className="whitespace-pre-wrap">{message.content}</p>
                 </div>
-                
+
                 {/* Movie Results */}
                 {message.movies && message.movies.length > 0 && (
                   <div className="mt-4">
@@ -149,7 +172,9 @@ const AIMovieBotComponent = ({ isOpen, onClose, moviePool, onMovieClick, onAddTo
                             movie={movie}
                             onMovieClick={onMovieClick}
                             onAddToWatchlist={onAddToWatchlist}
-                            isInWatchlist={watchlist.some(w => w.id === movie.id)}
+                            isInWatchlist={watchlist.some(
+                              (w) => w.id === movie.id
+                            )}
                             onAuthRequired={onAuthRequired}
                           />
                         </div>
@@ -157,20 +182,20 @@ const AIMovieBotComponent = ({ isOpen, onClose, moviePool, onMovieClick, onAddTo
                     </div>
                   </div>
                 )}
-                
+
                 <div className="text-xs text-slate-500 mt-2">
                   {message.timestamp.toLocaleTimeString()}
                 </div>
               </div>
-              
-              {message.type === 'user' && (
+
+              {message.type === "user" && (
                 <div className="bg-slate-700 p-2 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
                   <User className="w-4 h-4 text-white" />
                 </div>
               )}
             </div>
           ))}
-          
+
           {isLoading && (
             <div className="flex gap-3 justify-start">
               <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-2 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
@@ -184,7 +209,7 @@ const AIMovieBotComponent = ({ isOpen, onClose, moviePool, onMovieClick, onAddTo
               </div>
             </div>
           )}
-          
+
           <div ref={messagesEndRef} />
         </div>
 
@@ -193,7 +218,9 @@ const AIMovieBotComponent = ({ isOpen, onClose, moviePool, onMovieClick, onAddTo
           <div className="px-6 pb-4">
             <div className="flex items-center gap-2 mb-3">
               <Lightbulb className="w-4 h-4 text-yellow-400" />
-              <span className="text-sm text-slate-400">Try these suggestions:</span>
+              <span className="text-sm text-slate-400">
+                Try these suggestions:
+              </span>
             </div>
             <div className="flex flex-wrap gap-2">
               {suggestions.slice(0, 6).map((suggestion, index) => (

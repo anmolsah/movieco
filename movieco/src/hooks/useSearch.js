@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import MovieService from '../services/movieService.js';
+import { useState } from "react";
+import MovieService from "../services/movieService.js";
 
 export const useSearch = (updateLoadingState) => {
   const [searchResults, setSearchResults] = useState([]);
@@ -10,27 +10,27 @@ export const useSearch = (updateLoadingState) => {
       return;
     }
 
-    updateLoadingState('search', true);
-    
+    updateLoadingState("search", true);
+
     try {
       const results = await MovieService.searchMovies(query);
       setSearchResults(results.results || []);
     } catch (error) {
-      console.error('Search failed:', error);
+      console.error("Search failed:", error);
       setSearchResults([]);
     }
-    
-    updateLoadingState('search', false);
+
+    updateLoadingState("search", false);
   };
 
   const handleFilter = (filters) => {
-    console.log('Applying filters:', filters);
+    console.log("Applying filters:", filters);
     // Filter logic can be implemented here
   };
 
   return {
     searchResults,
     handleSearch,
-    handleFilter
+    handleFilter,
   };
 };

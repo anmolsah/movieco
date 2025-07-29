@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Search, Filter, X } from 'lucide-react';
+import React, { useState } from "react";
+import { Search, Filter, X } from "lucide-react";
 
 const SearchBar = ({ onSearch, onFilter, genres = [] }) => {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [minRating, setMinRating] = useState(0);
-  const [sortBy, setSortBy] = useState('popularity.desc');
+  const [sortBy, setSortBy] = useState("popularity.desc");
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -17,14 +17,14 @@ const SearchBar = ({ onSearch, onFilter, genres = [] }) => {
     onFilter({
       genres: selectedGenres,
       minRating,
-      sortBy
+      sortBy,
     });
   };
 
   const toggleGenre = (genreId) => {
-    setSelectedGenres(prev => 
+    setSelectedGenres((prev) =>
       prev.includes(genreId)
-        ? prev.filter(id => id !== genreId)
+        ? prev.filter((id) => id !== genreId)
         : [...prev, genreId]
     );
   };
@@ -32,11 +32,11 @@ const SearchBar = ({ onSearch, onFilter, genres = [] }) => {
   const clearFilters = () => {
     setSelectedGenres([]);
     setMinRating(0);
-    setSortBy('popularity.desc');
+    setSortBy("popularity.desc");
     onFilter({
       genres: [],
       minRating: 0,
-      sortBy: 'popularity.desc'
+      sortBy: "popularity.desc",
     });
   };
 
@@ -57,7 +57,9 @@ const SearchBar = ({ onSearch, onFilter, genres = [] }) => {
             type="button"
             onClick={() => setShowFilters(!showFilters)}
             className={`absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-lg transition-colors duration-200 ${
-              showFilters ? 'bg-purple-600 text-white' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+              showFilters
+                ? "bg-purple-600 text-white"
+                : "bg-slate-700 text-slate-300 hover:bg-slate-600"
             }`}
           >
             <Filter className="w-5 h-5" />
@@ -89,8 +91,8 @@ const SearchBar = ({ onSearch, onFilter, genres = [] }) => {
                   onClick={() => toggleGenre(genre.id)}
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     selectedGenres.includes(genre.id)
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                      ? "bg-purple-600 text-white"
+                      : "bg-slate-700 text-slate-300 hover:bg-slate-600"
                   }`}
                 >
                   {genre.name}

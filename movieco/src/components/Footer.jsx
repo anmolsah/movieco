@@ -10,9 +10,6 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="text-center md:text-left">
             <img className="w-60 h-48" src="./logo5.png" />
-            <p className="text-slate-400 text-sm">
-              Discover your next favorite movie with AI-powered recommendations
-            </p>
           </div>
 
           {/* Made with Love Section */}

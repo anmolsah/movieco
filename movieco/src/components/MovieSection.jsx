@@ -1,15 +1,15 @@
-import React from 'react';
-import MovieCard from './MovieCard.jsx';
+import React from "react";
+import MovieCard from "./MovieCard.jsx";
 
-const MovieSection = ({ 
-  title, 
-  movies, 
-  loading, 
-  onMovieClick, 
-  onAddToWatchlist, 
+const MovieSection = ({
+  title,
+  movies,
+  loading,
+  onMovieClick,
+  onAddToWatchlist,
   watchlist = [],
   icon: Icon,
-  onAuthRequired
+  onAuthRequired,
 }) => {
   if (loading) {
     return (
@@ -40,7 +40,7 @@ const MovieSection = ({
         <h2 className="text-2xl font-bold text-white">{title}</h2>
         <div className="h-px bg-gradient-to-r from-purple-500/50 to-transparent flex-1 ml-4"></div>
       </div>
-      
+
       {movies.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-slate-400 text-lg">No movies found</p>
@@ -53,7 +53,7 @@ const MovieSection = ({
               movie={movie}
               onMovieClick={onMovieClick}
               onAddToWatchlist={onAddToWatchlist}
-              isInWatchlist={watchlist.some(w => w.id === movie.id)}
+              isInWatchlist={watchlist.some((w) => w.id === movie.id)}
               onAuthRequired={onAuthRequired}
             />
           ))}

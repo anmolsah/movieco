@@ -1,24 +1,27 @@
-export const getCurrentMovies = (activeTab, {
-  nowPlayingMovies,
-  upcomingMovies,
-  popularMovies,
-  topRatedMovies,
-  watchlist,
-  searchResults,
-  loading
-}) => {
+export const getCurrentMovies = (
+  activeTab,
+  {
+    nowPlayingMovies,
+    upcomingMovies,
+    popularMovies,
+    topRatedMovies,
+    watchlist,
+    searchResults,
+    loading,
+  }
+) => {
   switch (activeTab) {
-    case 'now-playing':
+    case "now-playing":
       return { movies: nowPlayingMovies, loading: loading.nowPlaying };
-    case 'upcoming':
+    case "upcoming":
       return { movies: upcomingMovies, loading: loading.upcoming };
-    case 'popular':
+    case "popular":
       return { movies: popularMovies, loading: loading.popular };
-    case 'top-rated':
+    case "top-rated":
       return { movies: topRatedMovies, loading: loading.topRated };
-    case 'watchlist':
+    case "watchlist":
       return { movies: watchlist, loading: false };
-    case 'search':
+    case "search":
       return { movies: searchResults, loading: loading.search };
     default:
       return { movies: [], loading: false };
@@ -27,23 +30,23 @@ export const getCurrentMovies = (activeTab, {
 
 export const getSectionConfig = (activeTab) => {
   const sectionTitles = {
-    'now-playing': 'Now Playing',
-    'upcoming': 'Upcoming Movies',
-    'popular': 'Popular Movies',
-    'top-rated': 'Top Rated Movies',
-    'watchlist': 'My Watchlist'
+    "now-playing": "Now Playing",
+    upcoming: "Upcoming Movies",
+    popular: "Popular Movies",
+    "top-rated": "Top Rated Movies",
+    watchlist: "My Watchlist",
   };
 
   const sectionIcons = {
-    'now-playing': 'TrendingUp',
-    'upcoming': 'Calendar',
-    'popular': 'TrendingUp',
-    'top-rated': 'Trophy',
-    'watchlist': 'Heart'
+    "now-playing": "TrendingUp",
+    upcoming: "Calendar",
+    popular: "TrendingUp",
+    "top-rated": "Trophy",
+    watchlist: "Heart",
   };
 
   return {
     title: sectionTitles[activeTab],
-    icon: sectionIcons[activeTab]
+    icon: sectionIcons[activeTab],
   };
 };
