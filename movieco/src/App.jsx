@@ -1,31 +1,39 @@
-import React, { useState } from 'react';
-import { Sparkles, TrendingUp, Calendar, Trophy, Heart, Search, Bot } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  Sparkles,
+  TrendingUp,
+  Calendar,
+  Trophy,
+  Heart,
+  Search,
+  Bot,
+} from "lucide-react";
 
 // Components
-import Navigation from './components/Navigation.jsx';
-import HeroSection from './components/HeroSection.jsx';
-import MovieSection from './components/MovieSection.jsx';
-import MovieModal from './components/MovieModal.jsx';
-import SearchBar from './components/SearchBar.jsx';
-import Footer from './components/Footer.jsx';
-import AuthModal from './components/AuthModal.jsx';
-import ProfileModal from './components/ProfileModal.jsx';
-import AIMovieBot from './components/AIMovieBot.jsx';
+import Navigation from "./components/Navigation.jsx";
+import HeroSection from "./components/HeroSection.jsx";
+import MovieSection from "./components/MovieSection.jsx";
+import MovieModal from "./components/MovieModal.jsx";
+import SearchBar from "./components/SearchBar.jsx";
+import Footer from "./components/Footer.jsx";
+import AuthModal from "./components/AuthModal.jsx";
+import ProfileModal from "./components/ProfileModal.jsx";
+import AIMovieBot from "./components/AIMovieBot.jsx";
 
 // Custom Hooks
-import { useAuth } from './hooks/useAuth.js';
-import { useMovies } from './hooks/useMovies.js';
-import { useWatchlist } from './hooks/useWatchlist.js';
-import { useSearch } from './hooks/useSearch.js';
-import { useAIRecommendations } from './hooks/useAIRecommendations.js';
-import { useUserStats } from './hooks/useUserStats.js';
+import { useAuth } from "./hooks/useAuth.js";
+import { useMovies } from "./hooks/useMovies.js";
+import { useWatchlist } from "./hooks/useWatchlist.js";
+import { useSearch } from "./hooks/useSearch.js";
+import { useAIRecommendations } from "./hooks/useAIRecommendations.js";
+import { useUserStats } from "./hooks/useUserStats.js";
 
 // Utils
-import { getCurrentMovies, getSectionConfig } from './utils/movieUtils.js';
+import { getCurrentMovies, getSectionConfig } from "./utils/movieUtils.js";
 
 function App() {
   // UI State
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTab] = useState("home");
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [showSearch, setShowSearch] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -34,21 +42,27 @@ function App() {
 
   // Custom Hooks
   const { user, isAuthenticated, checkAuthForWatchlist } = useAuth();
-  const { 
-    nowPlayingMovies, 
-    upcomingMovies, 
-    popularMovies, 
-    topRatedMovies, 
-    allMovies, 
-    genres, 
-    featuredMovie, 
-    loading, 
-    updateLoadingState 
+  const {
+    nowPlayingMovies,
+    upcomingMovies,
+    popularMovies,
+    topRatedMovies,
+    allMovies,
+    genres,
+    featuredMovie,
+    loading,
+    updateLoadingState,
   } = useMovies();
-  
+
   const { watchlist, addToWatchlist } = useWatchlist(user, isAuthenticated);
-  const { searchResults, handleSearch, handleFilter } = useSearch(updateLoadingState);
-  const { aiRecommendations } = useAIRecommendations(popularMovies, updateLoadingState, user, isAuthenticated);
+  const { searchResults, handleSearch, handleFilter } =
+    useSearch(updateLoadingState);
+  const { aiRecommendations } = useAIRecommendations(
+    popularMovies,
+    updateLoadingState,
+    user,
+    isAuthenticated
+  );
   const { addMovieToWatchHistory } = useUserStats(user, watchlist);
 
   // Event Handlers
@@ -69,9 +83,9 @@ function App() {
   };
 
   const handleTabChange = (tab) => {
-    if (tab === 'search') {
+    if (tab === "search") {
       setShowSearch(true);
-      setActiveTab('search');
+      setActiveTab("search");
     } else {
       setShowSearch(false);
       setActiveTab(tab);
@@ -83,18 +97,18 @@ function App() {
     TrendingUp,
     Calendar,
     Trophy,
-    Heart
+    Heart,
   };
 
   const renderContent = () => {
-    if (activeTab === 'home') {
+    if (activeTab === "home") {
       return (
         <div className="space-y-12">
-          <HeroSection 
-            featuredMovie={featuredMovie} 
+          <HeroSection
+            featuredMovie={featuredMovie}
             onMovieClick={setSelectedMovie}
           />
-          
+
           <div className="container mx-auto px-6 max-w-7xl">
             {/* AI Bot CTA */}
             <div className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-sm border border-purple-500/30 rounded-2xl p-6 mb-12">
@@ -104,8 +118,13 @@ function App() {
                     <Bot className="w-8 h-8 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white mb-1">AI Movie Discovery</h3>
-                    <p className="text-slate-300">Tell me what you're in the mood for and I'll find the perfect movies!</p>
+                    <h3 className="text-xl font-bold text-white mb-1">
+                      AI Movie Discovery
+                    </h3>
+                    <p className="text-slate-300">
+                      Tell me what you're in the mood for and I'll find the
+                      perfect movies!
+                    </p>
                   </div>
                 </div>
                 <button
@@ -155,7 +174,7 @@ function App() {
               title="Top Rated"
               movies={topRatedMovies.slice(0, 10)}
               loading={loading.topRated}
-            onMovieClick={handleMovieClick}
+              onMovieClick={handleMovieClick}
               onAddToWatchlist={handleWatchlistAction}
               watchlist={watchlist}
               icon={Trophy}
@@ -169,12 +188,12 @@ function App() {
     if (showSearch) {
       return (
         <div className="container mx-auto px-6 max-w-7xl py-8">
-          <SearchBar 
+          <SearchBar
             onSearch={handleSearch}
             onFilter={handleFilter}
             genres={genres}
           />
-          
+
           <MovieSection
             title="Search Results"
             movies={searchResults}
@@ -190,16 +209,19 @@ function App() {
     }
 
     // Show auth prompt for watchlist if not authenticated
-    if (activeTab === 'watchlist' && !isAuthenticated) {
+    if (activeTab === "watchlist" && !isAuthenticated) {
       return (
         <div className="container mx-auto px-6 max-w-7xl py-16">
           <div className="text-center">
             <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
               <Heart className="w-10 h-10 text-white" />
             </div>
-            <h2 className="text-3xl font-bold text-white mb-4">Sign In to View Your Watchlist</h2>
+            <h2 className="text-3xl font-bold text-white mb-4">
+              Sign In to View Your Watchlist
+            </h2>
             <p className="text-slate-400 text-lg mb-8 max-w-md mx-auto">
-              Create an account to save your favorite movies and get personalized recommendations.
+              Create an account to save your favorite movies and get
+              personalized recommendations.
             </p>
             <button
               onClick={() => setShowAuthModal(true)}
@@ -219,10 +241,13 @@ function App() {
       topRatedMovies,
       watchlist,
       searchResults,
-      loading
+      loading,
     };
 
-    const { movies, loading: currentLoading } = getCurrentMovies(activeTab, movieData);
+    const { movies, loading: currentLoading } = getCurrentMovies(
+      activeTab,
+      movieData
+    );
     const { title, icon } = getSectionConfig(activeTab);
     const IconComponent = iconMap[icon];
 
@@ -250,7 +275,7 @@ function App() {
         watchlistCount={watchlist.length}
         onOpenSearch={() => {
           setShowSearch(true);
-          setActiveTab('search');
+          setActiveTab("search");
         }}
         onOpenProfile={() => setShowProfileModal(true)}
         onOpenAuth={() => setShowAuthModal(true)}
@@ -281,6 +306,10 @@ function App() {
         isOpen={showProfileModal}
         onClose={() => setShowProfileModal(false)}
         watchlist={watchlist}
+        onWatchlistUpdate={() => {
+          // Refresh watchlist after updates
+          window.location.reload(); // Simple refresh, could be improved
+        }}
       />
 
       <AIMovieBot

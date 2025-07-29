@@ -1,47 +1,127 @@
-import { useState, useEffect } from "react";
-import AuthService from "../services/authService.js";
+import { useState, useEffect, useCallback } from "react";
+import WatchlistService from "../services/watchlistService.js";
 
 export const useWatchlist = (user, isAuthenticated) => {
   const [watchlist, setWatchlist] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (isAuthenticated && user) {
-      // Load user's watchlist
-      const savedWatchlist = localStorage.getItem(`movieWatchlist_${user.id}`);
-      if (savedWatchlist) {
-        setWatchlist(JSON.parse(savedWatchlist));
-      }
-    } else {
-      // Clear watchlist when user signs out
+  // Load watchlist from Supabase when user logs in
+  const loadWatchlist = useCallback(async () => {
+    if (!isAuthenticated || !user?.id) {
       setWatchlist([]);
+      return;
     }
-  }, [user, isAuthenticated]);
 
-  const addToWatchlist = (movie) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const watchlistData = await WatchlistService.getUserWatchlist(user.id);
+      setWatchlist(watchlistData);
+
+      // Migrate local watchlist if exists
+      const localWatchlistKey = `movieWatchlist_${user.id}`;
+      const localWatchlist = localStorage.getItem(localWatchlistKey);
+
+      if (localWatchlist) {
+        const parsedLocal = JSON.parse(localWatchlist);
+        if (parsedLocal.length > 0) {
+          await WatchlistService.syncLocalWatchlist(user.id, parsedLocal);
+          // Reload after sync
+          const updatedWatchlist = await WatchlistService.getUserWatchlist(
+            user.id
+          );
+          setWatchlist(updatedWatchlist);
+          // Clear local storage after successful sync
+          localStorage.removeItem(localWatchlistKey);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to load watchlist:", error);
+      setError("Failed to load watchlist");
+
+      // Fallback to localStorage
+      const localWatchlistKey = `movieWatchlist_${user.id}`;
+      const localWatchlist = localStorage.getItem(localWatchlistKey);
+      if (localWatchlist) {
+        setWatchlist(JSON.parse(localWatchlist));
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [user?.id, isAuthenticated]);
+  useEffect(() => {
+    loadWatchlist();
+  }, [loadWatchlist]);
+
+  const addToWatchlist = async (movie) => {
     if (!isAuthenticated) {
       return false; // Indicate auth required
     }
 
+    setError(null);
     const isAlreadyInWatchlist = watchlist.some((w) => w.id === movie.id);
 
-    let newWatchlist;
-    if (isAlreadyInWatchlist) {
-      newWatchlist = watchlist.filter((w) => w.id !== movie.id);
-    } else {
-      newWatchlist = [...watchlist, movie];
+    try {
+      if (isAlreadyInWatchlist) {
+        // Remove from watchlist
+        await WatchlistService.removeFromWatchlist(user.id, movie.id);
+        setWatchlist((prev) => prev.filter((w) => w.id !== movie.id));
+      } else {
+        // Add to watchlist
+        const addedMovie = await WatchlistService.addToWatchlist(
+          user.id,
+          movie
+        );
+        setWatchlist((prev) => [addedMovie, ...prev]);
+      }
+
+      return true; // Success
+    } catch (error) {
+      console.error("Watchlist operation failed:", error);
+      setError(error.message || "Failed to update watchlist");
+
+      // Fallback to localStorage for offline functionality
+      let newWatchlist;
+      if (isAlreadyInWatchlist) {
+        newWatchlist = watchlist.filter((w) => w.id !== movie.id);
+      } else {
+        newWatchlist = [...watchlist, movie];
+      }
+
+      setWatchlist(newWatchlist);
+      const storageKey = user ? `movieWatchlist_${user.id}` : "movieWatchlist";
+      localStorage.setItem(storageKey, JSON.stringify(newWatchlist));
+
+      return true; // Still return success for UX
     }
+  };
 
-    setWatchlist(newWatchlist);
+  const clearWatchlist = async () => {
+    if (!isAuthenticated || !user?.id) return false;
 
-    // Save watchlist with user ID to keep it separate per user
-    const storageKey = user ? `movieWatchlist_${user.id}` : "movieWatchlist";
-    localStorage.setItem(storageKey, JSON.stringify(newWatchlist));
+    try {
+      await WatchlistService.clearWatchlist(user.id);
+      setWatchlist([]);
+      return true;
+    } catch (error) {
+      console.error("Failed to clear watchlist:", error);
+      setError("Failed to clear watchlist");
+      return false;
+    }
+  };
 
-    return true; // Success
+  const refreshWatchlist = () => {
+    loadWatchlist();
   };
 
   return {
     watchlist,
     addToWatchlist,
+    clearWatchlist,
+    refreshWatchlist,
+    loading,
+    error,
   };
 };

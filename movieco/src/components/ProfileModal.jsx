@@ -17,8 +17,14 @@ import {
 import AuthService from "../services/authService.js";
 import { useUserStats } from "../hooks/useUserStats.js";
 import MovieService from "../services/movieService.js";
+import WatchlistService from "../services/watchlistService.js";
 
-const ProfileModal = ({ isOpen, onClose, watchlist = [] }) => {
+const ProfileModal = ({
+  isOpen,
+  onClose,
+  watchlist = [],
+  onWatchlistUpdate,
+}) => {
   const [activeTab, setActiveTab] = useState("profile");
   const [user, setUser] = useState(null);
   const [preferences, setPreferences] = useState(null);
@@ -26,6 +32,7 @@ const ProfileModal = ({ isOpen, onClose, watchlist = [] }) => {
   const [loading, setLoading] = useState(false);
   const [editData, setEditData] = useState({});
   const [genres, setGenres] = useState([]);
+  const [recentlyAdded, setRecentlyAdded] = useState([]);
 
   const {
     userStats,
@@ -56,6 +63,19 @@ const ProfileModal = ({ isOpen, onClose, watchlist = [] }) => {
     loadGenres();
   }, []);
 
+  useEffect(() => {
+    const loadRecentlyAdded = async () => {
+      if (user?.id) {
+        const recent = await WatchlistService.getRecentlyAdded(user.id, 5);
+        setRecentlyAdded(recent);
+      }
+    };
+
+    if (isOpen && user?.id) {
+      loadRecentlyAdded();
+    }
+  }, [isOpen, user?.id, watchlist.length]);
+
   const handleSaveProfile = async () => {
     setLoading(true);
     try {
@@ -78,6 +98,23 @@ const ProfileModal = ({ isOpen, onClose, watchlist = [] }) => {
   const handleSignOut = async () => {
     await AuthService.signOut();
     onClose();
+  };
+
+  const handleClearWatchlist = async () => {
+    if (
+      window.confirm(
+        "Are you sure you want to clear your entire watchlist? This action cannot be undone."
+      )
+    ) {
+      try {
+        await WatchlistService.clearWatchlist(user.id);
+        if (onWatchlistUpdate) {
+          onWatchlistUpdate();
+        }
+      } catch (error) {
+        console.error("Failed to clear watchlist:", error);
+      }
+    }
   };
 
   const getGenreName = (genreId) => {
@@ -227,6 +264,41 @@ const ProfileModal = ({ isOpen, onClose, watchlist = [] }) => {
         </div>
       )}
 
+      {/* Recently Added to Watchlist */}
+      {recentlyAdded.length > 0 && (
+        <div className="space-y-3">
+          <h4 className="text-lg font-semibold text-white">
+            Recently Added to Watchlist
+          </h4>
+          <div className="space-y-2">
+            {recentlyAdded.map((movie) => (
+              <div
+                key={movie.id}
+                className="bg-slate-800/50 rounded-lg p-3 flex items-center gap-3"
+              >
+                <img
+                  src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
+                  alt={movie.title}
+                  className="w-12 h-18 object-cover rounded"
+                />
+                <div className="flex-1">
+                  <div className="text-white font-medium">{movie.title}</div>
+                  <div className="text-slate-400 text-sm">
+                    Added on {formatDate(movie.added_at)}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                  <span className="text-white text-sm">
+                    {movie.vote_average?.toFixed(1)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Account Info */}
       <div className="space-y-4">
         <h4 className="text-lg font-semibold text-white">
@@ -288,6 +360,18 @@ const ProfileModal = ({ isOpen, onClose, watchlist = [] }) => {
           </button>
         )}
       </div>
+
+      {/* Watchlist Management */}
+      {watchlist.length > 0 && (
+        <div className="pt-4 border-t border-slate-700">
+          <button
+            onClick={handleClearWatchlist}
+            className="w-full bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 text-red-400 py-2 px-4 rounded-lg font-medium transition-colors duration-200"
+          >
+            Clear Entire Watchlist ({watchlist.length} movies)
+          </button>
+        </div>
+      )}
     </div>
   );
 
