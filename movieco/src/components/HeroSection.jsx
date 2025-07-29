@@ -25,7 +25,7 @@ const HeroSection = ({ featuredMovie, onMovieClick }) => {
   }
 
   return (
-    <div className="relative h-[70vh] overflow-hidden">
+    <div className="relative h-[75vh] overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
