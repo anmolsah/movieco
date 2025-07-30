@@ -1,13 +1,15 @@
-import { TMDB_API_KEY, API_ENDPOINTS } from '../config/api.js';
+import { TMDB_API_KEY, API_ENDPOINTS } from "../config/api.js";
 
 class MovieService {
   async fetchMovies(endpoint, page = 1) {
     try {
-      const response = await fetch(`${endpoint}?api_key=${TMDB_API_KEY}&page=${page}`);
-      if (!response.ok) throw new Error('Failed to fetch movies');
+      const response = await fetch(
+        `${endpoint}?api_key=${TMDB_API_KEY}&page=${page}`
+      );
+      if (!response.ok) throw new Error("Failed to fetch movies");
       return await response.json();
     } catch (error) {
-      console.error('Movie fetch error:', error);
+      console.error("Movie fetch error:", error);
       return { results: [], total_pages: 0 };
     }
   }
@@ -15,12 +17,16 @@ class MovieService {
   async searchMovies(query, page = 1) {
     try {
       const response = await fetch(
-        `${API_ENDPOINTS.search}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&page=${page}`
+        `${
+          API_ENDPOINTS.search
+        }?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(
+          query
+        )}&page=${page}`
       );
-      if (!response.ok) throw new Error('Failed to search movies');
+      if (!response.ok) throw new Error("Failed to search movies");
       return await response.json();
     } catch (error) {
-      console.error('Movie search error:', error);
+      console.error("Movie search error:", error);
       return { results: [], total_pages: 0 };
     }
   }
@@ -30,22 +36,24 @@ class MovieService {
       const response = await fetch(
         `${API_ENDPOINTS.movieDetails}/${movieId}?api_key=${TMDB_API_KEY}&append_to_response=videos,credits`
       );
-      if (!response.ok) throw new Error('Failed to fetch movie details');
+      if (!response.ok) throw new Error("Failed to fetch movie details");
       return await response.json();
     } catch (error) {
-      console.error('Movie details error:', error);
+      console.error("Movie details error:", error);
       return null;
     }
   }
 
   async getGenres() {
     try {
-      const response = await fetch(`${API_ENDPOINTS.genres}?api_key=${TMDB_API_KEY}`);
-      if (!response.ok) throw new Error('Failed to fetch genres');
+      const response = await fetch(
+        `${API_ENDPOINTS.genres}?api_key=${TMDB_API_KEY}`
+      );
+      if (!response.ok) throw new Error("Failed to fetch genres");
       const data = await response.json();
       return data.genres;
     } catch (error) {
-      console.error('Genres fetch error:', error);
+      console.error("Genres fetch error:", error);
       return [];
     }
   }
