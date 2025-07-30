@@ -1,15 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 
-
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
 
 const createMockSupabaseClient = () => {
   return {
     auth: {
       signUp: async ({ email, password, options }) => {
-        
         const user = {
           id: "user-" + Date.now(),
           email,
@@ -34,7 +31,6 @@ const createMockSupabaseClient = () => {
       },
 
       signInWithPassword: async ({ email, password }) => {
-       
         if (password.length < 6) {
           return {
             data: { user: null },
@@ -68,7 +64,6 @@ const createMockSupabaseClient = () => {
 
       signInWithOAuth: async ({ provider, options }) => {
         if (provider === "google") {
-         
           const user = {
             id: "google-user-" + Date.now(),
             email: "user@gmail.com",
@@ -108,7 +103,6 @@ const createMockSupabaseClient = () => {
       },
 
       resetPasswordForEmail: async (email, options) => {
-      
         return { error: null };
       },
 
@@ -148,7 +142,6 @@ const createMockSupabaseClient = () => {
       },
 
       onAuthStateChange: (callback) => {
-      
         const checkAuth = () => {
           const session = localStorage.getItem("supabase_session");
           const user = localStorage.getItem("supabase_user");
@@ -160,10 +153,8 @@ const createMockSupabaseClient = () => {
           }
         };
 
-       
         setTimeout(checkAuth, 100);
 
-        
         const handleStorageChange = (e) => {
           if (e.key === "supabase_session" || e.key === "supabase_user") {
             checkAuth();
@@ -186,12 +177,10 @@ const createMockSupabaseClient = () => {
   };
 };
 
-
 export const supabase =
   supabaseUrl && supabaseAnonKey
     ? createClient(supabaseUrl, supabaseAnonKey)
     : createMockSupabaseClient();
-
 
 if (supabaseUrl && supabaseAnonKey) {
   console.log("✅ Using real Supabase configuration");
