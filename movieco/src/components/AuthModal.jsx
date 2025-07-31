@@ -11,6 +11,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import AuthService from "../services/authService.js";
+import logo from "../assets/logo5.png";
 
 const AuthModal = ({ isOpen, onClose, onSuccess }) => {
   const [mode, setMode] = useState("signin");
@@ -144,8 +145,10 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-            <Sparkles className="w-8 h-8 text-white" />
+          <div className="flex items-center justify-center">
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-600 text-transparent bg-clip-text text-center py-6 bg-black">
+              MOVIECO
+            </h1>
           </div>
           <h2 className="text-2xl font-bold text-white mb-2">
             {mode === "signin" && "Welcome Back"}

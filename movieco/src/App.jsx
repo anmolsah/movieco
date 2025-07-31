@@ -213,8 +213,10 @@ function App() {
       return (
         <div className="container mx-auto px-6 max-w-7xl py-16">
           <div className="text-center">
-            <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-              <Heart className="w-10 h-10 text-white" />
+            <div className="flex items-center justify-center">
+             <h1 class="text-6xl font-bold bg-gradient-to-r from-cyan-400 to-blue-600 text-transparent bg-clip-text text-center py-6 bg-black">
+              MOVIECO
+            </h1>
             </div>
             <h2 className="text-3xl font-bold text-white mb-4">
               Sign In to View Your Watchlist

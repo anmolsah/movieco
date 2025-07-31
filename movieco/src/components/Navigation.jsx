@@ -64,8 +64,9 @@ const Navigation = ({
       <div className="container mx-auto px-6 max-w-7xl">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <img className="w-60 h-48" src="./logo5.png" />
-
+          <button onClick={() => onTabChange("home")} className="cursor-pointer">
+            <img className="w-60 h-48" src="./logo5.png" />
+          </button>
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
