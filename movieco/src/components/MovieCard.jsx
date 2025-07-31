@@ -67,7 +67,7 @@ const MovieCard = ({
           <div className="absolute bottom-4 left-4 right-4">
             <button
               onClick={() => onMovieClick(movie)}
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200 mb-2"
+              className="cursor-pointer w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200 mb-2"
             >
               View Details
             </button>

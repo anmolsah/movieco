@@ -73,7 +73,7 @@ const Navigation = ({
               <button
                 key={item.id}
                 onClick={() => handleTabClick(item.id)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                className={`cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   activeTab === item.id
                     ? "text-purple-400 bg-purple-500/10"
                     : "text-slate-300 hover:text-white hover:bg-slate-800"
@@ -119,7 +119,7 @@ const Navigation = ({
             {/* Profile/Auth Button */}
             <button
               onClick={handleProfileClick}
-              className="flex items-center gap-2 p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors duration-200"
+              className="cursor-pointer flex items-center gap-2 p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors duration-200"
             >
               {isAuthenticated && user ? (
                 <img

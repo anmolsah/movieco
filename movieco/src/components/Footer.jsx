@@ -9,7 +9,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
           {/* Brand Section */}
           <div className="text-center md:text-left">
-            <img className="w-60 h-48" src="./logo5.png" />
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-600 text-transparent bg-clip-text text-center py-6 bg-black">
+              MOVIECO
+            </h1>
           </div>
 
           {/* Made with Love Section */}
