@@ -110,8 +110,38 @@ function App() {
           />
 
           <div className="container mx-auto px-6 max-w-7xl">
-            {/* AI Bot CTA */}
+            {/* AI Bot CTA */}/
             <div className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-sm border border-purple-500/30 rounded-2xl p-6 mb-12">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                {/* Left Side: Bot Icon + Text */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                  <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-3 rounded-full self-start sm:self-auto">
+                    <Bot className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white mb-1">
+                      AI Movie Discovery
+                    </h3>
+                    <p className="text-slate-300 text-sm sm:text-base">
+                      Tell me what you're in the mood for and I'll find the
+                      perfect movies!
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right Side: CTA Button */}
+                <div className="self-start md:self-auto">
+                  <button
+                    onClick={() => setShowAIBot(true)}
+                    className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/30 flex items-center gap-2 text-sm sm:text-base"
+                  >
+                    <Sparkles className="w-5 h-5" />
+                    Try AI Discovery
+                  </button>
+                </div>
+              </div>
+            </div>
+            {/* <div className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-sm border border-purple-500/30 rounded-2xl p-6 mb-12">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-3 rounded-full">
@@ -135,8 +165,7 @@ function App() {
                   Try AI Discovery
                 </button>
               </div>
-            </div>
-
+            </div> */}
             <MovieSection
               title="AI Recommended For You"
               movies={aiRecommendations}
@@ -147,7 +176,6 @@ function App() {
               icon={Sparkles}
               onAuthRequired={checkAuthForWatchlist}
             />
-
             <MovieSection
               title="Now Playing"
               movies={nowPlayingMovies.slice(0, 10)}
@@ -158,7 +186,6 @@ function App() {
               icon={TrendingUp}
               onAuthRequired={checkAuthForWatchlist}
             />
-
             <MovieSection
               title="Coming Soon"
               movies={upcomingMovies.slice(0, 10)}
@@ -169,7 +196,6 @@ function App() {
               icon={Calendar}
               onAuthRequired={checkAuthForWatchlist}
             />
-
             <MovieSection
               title="Top Rated"
               movies={topRatedMovies.slice(0, 10)}
@@ -214,9 +240,9 @@ function App() {
         <div className="container mx-auto px-6 max-w-7xl py-16">
           <div className="text-center">
             <div className="flex items-center justify-center">
-             <h1 class="text-6xl font-bold bg-gradient-to-r from-cyan-400 to-blue-600 text-transparent bg-clip-text text-center py-6 bg-black">
-              MOVIECO
-            </h1>
+              <h1 class="text-6xl font-bold bg-gradient-to-r from-cyan-400 to-blue-600 text-transparent bg-clip-text text-center py-6 bg-black">
+                MOVIECO
+              </h1>
             </div>
             <h2 className="text-3xl font-bold text-white mb-4">
               Sign In to View Your Watchlist
