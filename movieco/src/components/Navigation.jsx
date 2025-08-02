@@ -55,7 +55,12 @@ const Navigation = ({
   };
 
   const handleAIBotClick = () => {
-    onOpenAIBot();
+    if (isAuthenticated) {
+      onOpenAIBot();
+    } else {
+      onOpenAuth();
+    }
+
     setMobileMenuOpen(false);
   };
 
@@ -64,7 +69,10 @@ const Navigation = ({
       <div className="container mx-auto px-6 max-w-7xl">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <button onClick={() => onTabChange("home")} className="cursor-pointer">
+          <button
+            onClick={() => onTabChange("home")}
+            className="cursor-pointer"
+          >
             <img className="w-60 h-48" src="./logo5.png" />
           </button>
           {/* Desktop Navigation */}
