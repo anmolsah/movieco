@@ -84,8 +84,12 @@ function App() {
 
   const handleTabChange = (tab) => {
     if (tab === "search") {
-      setShowSearch(true);
-      setActiveTab("search");
+      if (isAuthenticated) {
+        setShowSearch(true);
+        setActiveTab("search");
+      } else {
+        setShowAuthModal(true);
+      }
     } else {
       setShowSearch(false);
       setActiveTab(tab);
@@ -131,41 +135,26 @@ function App() {
 
                 {/* Right Side: CTA Button */}
                 <div className="self-start md:self-auto">
-                  <button
-                    onClick={() => setShowAIBot(true)}
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/30 flex items-center gap-2 text-sm sm:text-base"
-                  >
-                    <Sparkles className="w-5 h-5" />
-                    Try AI Discovery
-                  </button>
+                  {isAuthenticated ? (
+                    <button
+                      onClick={() => setShowAIBot(true)}
+                      className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/30 flex items-center gap-2 text-sm sm:text-base"
+                    >
+                      <Sparkles className="w-5 h-5" />
+                      Try AI Discovery
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setShowAuthModal(true)}
+                      className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/30 flex items-center gap-2 text-sm sm:text-base"
+                    >
+                      <Sparkles className="w-5 h-5" />
+                      Sign In to Use AI Discovery
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
-            {/* <div className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-sm border border-purple-500/30 rounded-2xl p-6 mb-12">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-3 rounded-full">
-                    <Bot className="w-8 h-8 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-white mb-1">
-                      AI Movie Discovery
-                    </h3>
-                    <p className="text-slate-300">
-                      Tell me what you're in the mood for and I'll find the
-                      perfect movies!
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowAIBot(true)}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/30 flex items-center gap-2"
-                >
-                  <Sparkles className="w-5 h-5" />
-                  Try AI Discovery
-                </button>
-              </div>
-            </div> */}
             <MovieSection
               title="AI Recommended For You"
               movies={aiRecommendations}
