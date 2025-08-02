@@ -291,12 +291,22 @@ function App() {
         onTabChange={handleTabChange}
         watchlistCount={watchlist.length}
         onOpenSearch={() => {
-          setShowSearch(true);
+          if(isAuthenticated){
+            setShowSearch(true);
           setActiveTab("search");
+          }else{
+            setShowAuthModal(true);
+          }
         }}
         onOpenProfile={() => setShowProfileModal(true)}
         onOpenAuth={() => setShowAuthModal(true)}
-        onOpenAIBot={() => setShowAIBot(true)}
+        onOpenAIBot={() => {
+          if (isAuthenticated) {
+            setShowAIBot(true);
+          } else {
+            setShowAuthModal(true);
+          }
+        }}
       />
 
       {renderContent()}
