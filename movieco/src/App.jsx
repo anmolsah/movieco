@@ -13,6 +13,7 @@ import {
 import Navigation from "./components/Navigation.jsx";
 import HeroSection from "./components/HeroSection.jsx";
 import MovieSection from "./components/MovieSection.jsx";
+import TVSection from "./components/TVSection.jsx";
 import MovieModal from "./components/MovieModal.jsx";
 import SearchBar from "./components/SearchBar.jsx";
 import Footer from "./components/Footer.jsx";
@@ -27,6 +28,7 @@ import { useWatchlist } from "./hooks/useWatchlist.js";
 import { useSearch } from "./hooks/useSearch.js";
 import { useAIRecommendations } from "./hooks/useAIRecommendations.js";
 import { useUserStats } from "./hooks/useUserStats.js";
+import { useTVShows } from "./hooks/useTVShows.js";
 
 // Utils
 import { getCurrentMovies, getSectionConfig } from "./utils/movieUtils.js";
@@ -64,6 +66,19 @@ function App() {
     isAuthenticated
   );
   const { addMovieToWatchHistory } = useUserStats(user, watchlist);
+
+  // TV Shows Hook
+  const {
+    popularTVShows,
+    topRatedTVShows,
+    onTheAirTVShows,
+    airingTodayTVShows,
+    allTVShows,
+    tvGenres,
+    featuredTVShow,
+    loading: tvLoading,
+    updateLoadingState: updateTVLoadingState,
+  } = useTVShows();
 
   // Event Handlers
   const handleWatchlistAction = (movie) => {
@@ -195,6 +210,16 @@ function App() {
               icon={Trophy}
               onAuthRequired={checkAuthForWatchlist}
             />
+            <TVSection
+              title="Popular TV Shows"
+              tvShows={popularTVShows.slice(0, 10)}
+              loading={tvLoading.popular}
+              onTVClick={handleMovieClick}
+              onAddToWatchlist={handleWatchlistAction}
+              watchlist={watchlist}
+              icon={TrendingUp}
+              onAuthRequired={checkAuthForWatchlist}
+            />
           </div>
         </div>
       );
@@ -217,6 +242,57 @@ function App() {
             onAddToWatchlist={handleWatchlistAction}
             watchlist={watchlist}
             icon={Search}
+            onAuthRequired={checkAuthForWatchlist}
+          />
+        </div>
+      );
+    }
+
+    // TV Shows tab
+    if (activeTab === "tv-shows") {
+      return (
+        <div className="container mx-auto px-6 max-w-7xl py-8 space-y-12">
+          <TVSection
+            title="Popular TV Shows"
+            tvShows={popularTVShows}
+            loading={tvLoading.popular}
+            onTVClick={handleMovieClick}
+            onAddToWatchlist={handleWatchlistAction}
+            watchlist={watchlist}
+            icon={TrendingUp}
+            onAuthRequired={checkAuthForWatchlist}
+          />
+
+          <TVSection
+            title="Top Rated TV Shows"
+            tvShows={topRatedTVShows}
+            loading={tvLoading.topRated}
+            onTVClick={handleMovieClick}
+            onAddToWatchlist={handleWatchlistAction}
+            watchlist={watchlist}
+            icon={Trophy}
+            onAuthRequired={checkAuthForWatchlist}
+          />
+
+          <TVSection
+            title="On The Air"
+            tvShows={onTheAirTVShows}
+            loading={tvLoading.onTheAir}
+            onTVClick={handleMovieClick}
+            onAddToWatchlist={handleWatchlistAction}
+            watchlist={watchlist}
+            icon={Calendar}
+            onAuthRequired={checkAuthForWatchlist}
+          />
+
+          <TVSection
+            title="Airing Today"
+            tvShows={airingTodayTVShows}
+            loading={tvLoading.airingToday}
+            onTVClick={handleMovieClick}
+            onAddToWatchlist={handleWatchlistAction}
+            watchlist={watchlist}
+            icon={Calendar}
             onAuthRequired={checkAuthForWatchlist}
           />
         </div>
@@ -291,10 +367,10 @@ function App() {
         onTabChange={handleTabChange}
         watchlistCount={watchlist.length}
         onOpenSearch={() => {
-          if(isAuthenticated){
+          if (isAuthenticated) {
             setShowSearch(true);
-          setActiveTab("search");
-          }else{
+            setActiveTab("search");
+          } else {
             setShowAuthModal(true);
           }
         }}

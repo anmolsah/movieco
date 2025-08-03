@@ -38,6 +38,7 @@ const Navigation = ({
     { id: "upcoming", label: "Upcoming", icon: null },
     { id: "popular", label: "Popular", icon: null },
     { id: "top-rated", label: "Top Rated", icon: null },
+    { id: "tv-shows", label: "TV Shows", icon: null },
   ];
 
   const handleTabClick = (tabId) => {

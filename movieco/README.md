@@ -1,12 +1,28 @@
-# React + Vite
+# 🎬 Movieco - AI-Powered Movie & TV Discovery Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<div align="center">
+  <img src="https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=1200&h=400&fit=crop" alt="CineAI Banner" width="100%" height="200" style="object-fit: cover; border-radius: 10px;">
+  
+  [![React](https://img.shields.io/badge/React-18.3.1-blue.svg)](https://reactjs.org/)
+  [![Vite](https://img.shields.io/badge/Vite-5.4.2-646CFF.svg)](https://vitejs.dev/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.1-38B2AC.svg)](https://tailwindcss.com/)
+  [![Supabase](https://img.shields.io/badge/Supabase-Database-3ECF8E.svg)](https://supabase.com/)
+  [![Gemini AI](https://img.shields.io/badge/Gemini_AI-Powered-4285F4.svg)](https://ai.google.dev/)
+  [![TMDB](https://img.shields.io/badge/TMDB-API-01B4E4.svg)](https://www.themoviedb.org/)
+  [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+</div>
 
-Currently, two official plugins are available:
+## 🌟 Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Movieco** is a cutting-edge movie and TV show discovery platform that leverages artificial intelligence to provide personalized recommendations. Built with modern web technologies, it offers an intuitive and engaging experience for movie enthusiasts to discover, track, and manage their entertainment preferences.
 
-## Expanding the ESLint configuration
+### ✨ Key Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- 🤖 **AI-Powered Recommendations** - Gemini AI analyzes your preferences for personalized suggestions
+- 🎬 **Comprehensive Database** - Access to thousands of movies and TV shows via TMDB API
+- 📺 **TV Shows & Web Series** - Dedicated section for television content
+- 🔐 **Secure Authentication** - User accounts with Supabase authentication
+- 💾 **Cloud Watchlist** - Synchronized watchlist across all devices
+- 🔍 **Advanced Search** - Intelligent search with filters and AI assistance
+- 📊 **User Analytics** - Track viewing history and personalized statistics
+- 🎨 **Modern UI/UX** - Beautiful, responsive design with smooth animations

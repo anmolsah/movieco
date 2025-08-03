@@ -35,6 +35,7 @@ export const getSectionConfig = (activeTab) => {
     popular: "Popular Movies",
     "top-rated": "Top Rated Movies",
     watchlist: "My Watchlist",
+    "tv-shows": "TV Shows & Web Series",
   };
 
   const sectionIcons = {
@@ -43,6 +44,7 @@ export const getSectionConfig = (activeTab) => {
     popular: "TrendingUp",
     "top-rated": "Trophy",
     watchlist: "Heart",
+    "tv-shows": "TrendingUp",
   };
 
   return {
