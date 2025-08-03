@@ -30,7 +30,7 @@
 
 ## 🚀 Live Demo
 
-Experience CineAI live: **[https://movieco-ubb9.vercel.app/](movieco.in)**
+Experience Movieco live: **[https://movieco-ubb9.vercel.app/](movieco.in)**
 
 ## 🛠️ Technology Stack
 
