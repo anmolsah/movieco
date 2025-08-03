@@ -16,6 +16,14 @@ export const API_ENDPOINTS = {
   search: `${TMDB_BASE_URL}/search/movie`,
   movieDetails: `${TMDB_BASE_URL}/movie`,
   genres: `${TMDB_BASE_URL}/genre/movie/list`,
+   // TV Shows endpoints
+  tvPopular: `${TMDB_BASE_URL}/tv/popular`,
+  tvTopRated: `${TMDB_BASE_URL}/tv/top_rated`,
+  tvOnTheAir: `${TMDB_BASE_URL}/tv/on_the_air`,
+  tvAiringToday: `${TMDB_BASE_URL}/tv/airing_today`,
+  searchTv: `${TMDB_BASE_URL}/search/tv`,
+  tvDetails: `${TMDB_BASE_URL}/tv`,
+  tvGenres: `${TMDB_BASE_URL}/genre/tv/list`,
 };
 
 export const getImageUrl = (path, size = "w500") => {
