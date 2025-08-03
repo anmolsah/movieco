@@ -26,3 +26,25 @@
 - 🔍 **Advanced Search** - Intelligent search with filters and AI assistance
 - 📊 **User Analytics** - Track viewing history and personalized statistics
 - 🎨 **Modern UI/UX** - Beautiful, responsive design with smooth animations
+
+
+## 🚀 Live Demo
+
+Experience CineAI live: **[https://cineai-demo.netlify.app](https://cineai-demo.netlify.app)**
+
+## 🛠️ Technology Stack
+
+### Frontend
+- **React 18.3.1** - Modern React with hooks and functional components
+- **Vite 5.4.2** - Lightning-fast build tool and dev server
+- **Tailwind CSS 3.4.1** - Utility-first CSS framework
+- **Lucide React** - Beautiful, customizable icons
+
+### Backend & Services
+- **Supabase** - Backend-as-a-Service for authentication and database
+- **TMDB API** - The Movie Database for comprehensive movie/TV data
+- **Gemini AI** - Google's advanced AI for intelligent recommendations
+
+### Database
+- **PostgreSQL** (via Supabase) - Robust relational database
+- **Row Level Security** - Secure data access patterns
