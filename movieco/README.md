@@ -48,3 +48,14 @@ Experience Movieco live: **[https://movieco-ubb9.vercel.app/](movieco.in)**
 ### Database
 - **PostgreSQL** (via Supabase) - Robust relational database
 - **Row Level Security** - Secure data access patterns
+
+
+
+## 📱 Screenshots
+
+<div align="center">
+  <img src="./m1.png" alt="Homepage" width="45%" style="margin: 10px;">
+  <img src="./m2.png" alt="AI Bot" width="45%" style="margin: 10px;">
+   <img src="./m4.png" alt="AI Bot" width="45%" style="margin: 10px;">
+    <img src="./m5.png" alt="AI Bot" width="45%" style="margin: 10px;">
+</div>
