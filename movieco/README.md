@@ -54,8 +54,8 @@ Experience Movieco live: **[https://movieco-ubb9.vercel.app/](movieco.in)**
 ## 📱 Screenshots
 
 <div align="center">
-  <img src="./m1.png" alt="Homepage" width="45%" style="margin: 10px;">
-  <img src="./m2.png" alt="AI Bot" width="45%" style="margin: 10px;">
-   <img src="./m4.png" alt="AI Bot" width="45%" style="margin: 10px;">
-    <img src="./m5.png" alt="AI Bot" width="45%" style="margin: 10px;">
+  <img src="./src/assets/m1.png" alt="Homepage" width="45%" style="margin: 10px;">
+  <img src="./src/assets/m2.png" alt="AI Bot" width="45%" style="margin: 10px;">
+   <img src="./src//assets/m4.png" alt="AI Bot" width="45%" style="margin: 10px;">
+    <img src="./src/assets/m5.png" alt="AI Bot" width="45%" style="margin: 10px;">
 </div>
