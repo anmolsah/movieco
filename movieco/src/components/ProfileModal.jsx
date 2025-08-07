@@ -13,6 +13,7 @@ import {
   TrendingUp,
   Calendar,
   Award,
+  Menu,
 } from "lucide-react";
 import AuthService from "../services/authService.js";
 import { useUserStats } from "../hooks/useUserStats.js";
@@ -33,6 +34,7 @@ const ProfileModal = ({
   const [editData, setEditData] = useState({});
   const [genres, setGenres] = useState([]);
   const [recentlyAdded, setRecentlyAdded] = useState([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const {
     userStats,
@@ -570,22 +572,56 @@ const ProfileModal = ({
   );
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-slate-900 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
+      <div className="bg-slate-900 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-700">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-700">
           <h2 className="text-xl font-bold text-white">Profile Settings</h2>
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-white transition-colors duration-200"
-          >
-            <X className="w-6 h-6" />
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="sm:hidden text-slate-400 hover:text-white transition-colors duration-200"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+            <button
+              onClick={onClose}
+              className="text-slate-400 hover:text-white transition-colors duration-200"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
         </div>
 
-        <div className="flex">
-          {/* Sidebar */}
-          <div className="w-48 bg-slate-800/50 p-4">
+        <div className="flex flex-col sm:flex-row flex-1 min-h-0">
+          {/* Sidebar - Mobile */}
+          {mobileMenuOpen && (
+            <div className="sm:hidden bg-slate-800/50 p-4 border-b border-slate-700">
+              <nav className="flex flex-wrap gap-2">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      setActiveTab(tab.id);
+                      setMobileMenuOpen(false);
+                    }}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex-shrink-0 ${
+                      activeTab === tab.id
+                        ? "bg-purple-600 text-white"
+                        : "text-slate-300 hover:bg-slate-700"
+                    }`}
+                  >
+                    <tab.icon className="w-4 h-4" />
+                    {tab.label}
+                  </button>
+                ))}
+              </nav>
+            </div>
+          )}
+
+          {/* Sidebar - Desktop */}
+          <div className="hidden sm:block w-48 bg-slate-800/50 p-4 flex-shrink-0">
             <nav className="space-y-2">
               {tabs.map((tab) => (
                 <button
@@ -605,7 +641,7 @@ const ProfileModal = ({
           </div>
 
           {/* Content */}
-          <div className="flex-1 p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+          <div className="flex-1 p-4 sm:p-6 overflow-y-auto">
             {activeTab === "profile" && renderProfileTab()}
             {activeTab === "preferences" && renderPreferencesTab()}
             {activeTab === "notifications" && renderNotificationsTab()}
