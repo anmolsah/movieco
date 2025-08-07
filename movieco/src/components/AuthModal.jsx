@@ -310,12 +310,12 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
                 </button>
               </p>
               <p className="text-slate-400 text-sm">
-                <button
+                {/* <button
                   onClick={() => switchMode("forgot")}
                   className="text-purple-400 hover:text-purple-300 font-medium"
                 >
                   Forgot your password?
-                </button>
+                </button> */}
               </p>
             </>
           )}
