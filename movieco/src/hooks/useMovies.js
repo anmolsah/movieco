@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import MovieService from "../services/movieService.js";
 
-export const useMovies = () => {
+export const useMovies = (region = 'US') => {
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [popularMovies, setPopularMovies] = useState([]);
@@ -26,12 +26,12 @@ export const useMovies = () => {
         const genresData = await MovieService.getGenres();
         setGenres(genresData);
 
-        // Load movie categories
+        // Load movie categories with watch providers
         const [nowPlaying, upcoming, popular, topRated] = await Promise.all([
-          MovieService.getNowPlaying(),
-          MovieService.getUpcoming(),
-          MovieService.getPopular(),
-          MovieService.getTopRated(),
+          MovieService.getNowPlayingWithProviders(1, region),
+          MovieService.getUpcomingWithProviders(1, region),
+          MovieService.getPopularWithProviders(1, region),
+          MovieService.getTopRatedWithProviders(1, region),
         ]);
 
         setNowPlayingMovies(nowPlaying.results || []);
@@ -85,7 +85,7 @@ export const useMovies = () => {
     };
 
     loadInitialData();
-  }, []);
+  }, [region]);
 
   const updateLoadingState = (key, value) => {
     setLoading((prev) => ({ ...prev, [key]: value }));

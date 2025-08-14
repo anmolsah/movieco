@@ -65,6 +65,63 @@ class TVService {
   async getAiringTodayTV(page = 1) {
     return this.fetchTVShows(API_ENDPOINTS.tvAiringToday, page);
   }
+
+  async getWatchProviders(id, region = 'US') {
+    try {
+      const response = await fetch(
+        `${API_ENDPOINTS.tvWatchProviders}/${id}/watch/providers?api_key=${TMDB_API_KEY}`
+      );
+      if (!response.ok) return null;
+      const data = await response.json();
+      return data.results[region] || null;
+    } catch (error) {
+      console.error("TV watch providers fetch error:", error);
+      return null;
+    }
+  }
+
+  async getTVShowsWithProviders(endpoint, page = 1, region = 'US') {
+    try {
+      const tvData = await this.fetchTVShows(endpoint, page);
+      if (!tvData.results) return tvData;
+
+      // Fetch watch providers for each TV show (limit to first 10 for performance)
+      const tvWithProviders = await Promise.all(
+        tvData.results.slice(0, 10).map(async (tvShow) => {
+          const providers = await this.getWatchProviders(tvShow.id, region);
+          return { ...tvShow, watchProviders: providers };
+        })
+      );
+
+      // Add remaining TV shows without providers
+      const remainingTVShows = tvData.results.slice(10).map(tvShow => ({ ...tvShow, watchProviders: null }));
+
+      return {
+        ...tvData,
+        results: [...tvWithProviders, ...remainingTVShows]
+      };
+    } catch (error) {
+      console.error("TV shows with providers fetch error:", error);
+      return { results: [], total_pages: 0 };
+    }
+  }
+
+  // Enhanced methods that include watch providers
+  async getPopularTVWithProviders(page = 1, region = 'US') {
+    return this.getTVShowsWithProviders(API_ENDPOINTS.tvPopular, page, region);
+  }
+
+  async getTopRatedTVWithProviders(page = 1, region = 'US') {
+    return this.getTVShowsWithProviders(API_ENDPOINTS.tvTopRated, page, region);
+  }
+
+  async getOnTheAirTVWithProviders(page = 1, region = 'US') {
+    return this.getTVShowsWithProviders(API_ENDPOINTS.tvOnTheAir, page, region);
+  }
+
+  async getAiringTodayTVWithProviders(page = 1, region = 'US') {
+    return this.getTVShowsWithProviders(API_ENDPOINTS.tvAiringToday, page, region);
+  }
 }
 
 export default new TVService();

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import TVService from '../services/tvService.js';
 
-export const useTVShows = () => {
+export const useTVShows = (region = 'US') => {
   const [popularTVShows, setPopularTVShows] = useState([]);
   const [topRatedTVShows, setTopRatedTVShows] = useState([]);
   const [onTheAirTVShows, setOnTheAirTVShows] = useState([]);
@@ -9,7 +9,7 @@ export const useTVShows = () => {
   const [allTVShows, setAllTVShows] = useState([]);
   const [tvGenres, setTVGenres] = useState([]);
   const [featuredTVShow, setFeaturedTVShow] = useState(null);
-  
+
   const [loading, setLoading] = useState({
     popular: true,
     topRated: true,
@@ -25,12 +25,12 @@ export const useTVShows = () => {
         const genresData = await TVService.getTVGenres();
         setTVGenres(genresData);
 
-        // Load TV show categories
+        // Load TV show categories with watch providers
         const [popular, topRated, onTheAir, airingToday] = await Promise.all([
-          TVService.getPopularTV(),
-          TVService.getTopRatedTV(),
-          TVService.getOnTheAirTV(),
-          TVService.getAiringTodayTV()
+          TVService.getPopularTVWithProviders(1, region),
+          TVService.getTopRatedTVWithProviders(1, region),
+          TVService.getOnTheAirTVWithProviders(1, region),
+          TVService.getAiringTodayTVWithProviders(1, region)
         ]);
 
         setPopularTVShows(popular.results || []);
@@ -45,9 +45,9 @@ export const useTVShows = () => {
           ...(onTheAir.results || []),
           ...(airingToday.results || [])
         ];
-        
+
         // Remove duplicates based on TV show ID
-        const uniqueTVShows = combined.filter((show, index, self) => 
+        const uniqueTVShows = combined.filter((show, index, self) =>
           index === self.findIndex(s => s.id === show.id)
         );
         setAllTVShows(uniqueTVShows);
@@ -67,7 +67,7 @@ export const useTVShows = () => {
           airingToday: false,
           search: false
         });
-        
+
       } catch (error) {
         console.error('Failed to load TV data:', error);
         setLoading({
@@ -81,7 +81,7 @@ export const useTVShows = () => {
     };
 
     loadTVData();
-  }, []);
+  }, [region]);
 
   const updateLoadingState = (key, value) => {
     setLoading(prev => ({ ...prev, [key]: value }));

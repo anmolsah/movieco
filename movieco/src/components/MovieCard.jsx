@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Star, Calendar, Clock, Eye, Heart } from "lucide-react";
 import { getImageUrl } from "../config/api.js";
+import StreamingPlatforms from "./StreamingPlatforms.jsx";
 
 const MovieCard = ({
   movie,
@@ -119,7 +120,9 @@ const MovieCard = ({
           {movie.overview || "No description available."}
         </p>
 
-        <div className="flex items-center justify-between">
+        <StreamingPlatforms watchProviders={movie.watchProviders} />
+
+        <div className="flex items-center justify-between mt-3">
           <div className="flex items-center gap-1 text-slate-400">
             <Eye className="w-4 h-4" />
             <span className="text-xs">

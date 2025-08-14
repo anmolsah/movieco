@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Star, Calendar, Clock, Eye, Heart, Tv } from 'lucide-react';
 import { getImageUrl } from '../config/api.js';
+import StreamingPlatforms from './StreamingPlatforms.jsx';
 
 const TVCard = ({ tvShow, onTVClick, onAddToWatchlist, isInWatchlist, onAuthRequired }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -109,7 +110,9 @@ const TVCard = ({ tvShow, onTVClick, onAddToWatchlist, isInWatchlist, onAuthRequ
           {tvShow.overview || 'No description available.'}
         </p>
 
-        <div className="flex items-center justify-between">
+        <StreamingPlatforms watchProviders={tvShow.watchProviders} />
+
+        <div className="flex items-center justify-between mt-3">
           <div className="flex items-center gap-1 text-slate-400">
             <Eye className="w-4 h-4" />
             <span className="text-xs">{tvShow.popularity?.toFixed(0)} views</span>
