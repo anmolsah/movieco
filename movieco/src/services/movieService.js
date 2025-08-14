@@ -17,8 +17,7 @@ class MovieService {
   async searchMovies(query, page = 1) {
     try {
       const response = await fetch(
-        `${
-          API_ENDPOINTS.search
+        `${API_ENDPOINTS.search
         }?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(
           query
         )}&page=${page}`
@@ -40,6 +39,19 @@ class MovieService {
       return await response.json();
     } catch (error) {
       console.error("Movie details error:", error);
+      return null;
+    }
+  }
+
+  async getTvDetails(tvId) {
+    try {
+      const response = await fetch(
+        `${API_ENDPOINTS.tvDetails}/${tvId}?api_key=${TMDB_API_KEY}&append_to_response=videos,credits`
+      );
+      if (!response.ok) throw new Error("Failed to fetch TV show details");
+      return await response.json();
+    } catch (error) {
+      console.error("TV show details error:", error);
       return null;
     }
   }

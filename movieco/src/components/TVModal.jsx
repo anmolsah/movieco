@@ -1,46 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { X, Star, Calendar, Clock, Globe, Play, Users } from "lucide-react";
+import { X, Star, Calendar, Clock, Globe, Play, Users, Tv } from "lucide-react";
 import { getImageUrl } from "../config/api.js";
-import MovieService from "../services/movieService.js";
+import TVService from "../services/TVService.js";
 
-const MovieModal = ({ movie, onClose }) => {
-  const [movieDetails, setMovieDetails] = useState(null);
+const TVModal = ({ tvShow, onClose }) => {
+  const [tvDetails, setTvDetails] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMovieDetails = async () => {
-      if (movie?.id) {
+    const fetchTVDetails = async () => {
+      if (tvShow?.id) {
         setLoading(true);
-        // Check if it's a TV show (has 'name' instead of 'title' or has media_type)
-        const isTvShow = movie.name || movie.media_type === 'tv' || movie.first_air_date;
-        const details = isTvShow 
-          ? await MovieService.getTvDetails(movie.id)
-          : await MovieService.getMovieDetails(movie.id);
-        setMovieDetails(details);
+        const details = await TVService.getTVDetails(tvShow.id);
+        setTvDetails(details);
         setLoading(false);
       }
     };
 
-    fetchMovieDetails();
-  }, [movie?.id]);
+    fetchTVDetails();
+  }, [tvShow?.id]);
 
-  if (!movie) return null;
+  if (!tvShow) return null;
 
-  const formatRuntime = (minutes) => {
-    if (!minutes) return "N/A";
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours}h ${mins}m`;
-  };
-
-  const formatCurrency = (amount) => {
-    if (!amount) return "N/A";
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
 
   return (
@@ -48,11 +36,11 @@ const MovieModal = ({ movie, onClose }) => {
       <div className="bg-slate-900 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="relative">
-          {movieDetails?.backdrop_path && (
+          {tvDetails?.backdrop_path && (
             <div className="h-64 md:h-80 overflow-hidden rounded-t-2xl">
               <img
-                src={getImageUrl(movieDetails.backdrop_path, "w1280")}
-                alt={movie.title || movie.name}
+                src={getImageUrl(tvDetails.backdrop_path, "w1280")}
+                alt={tvShow.name}
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent" />
@@ -73,21 +61,21 @@ const MovieModal = ({ movie, onClose }) => {
             {/* Poster */}
             <div className="flex-shrink-0">
               <img
-                src={getImageUrl(movie.poster_path, "w342")}
-                alt={movie.title || movie.name}
+                src={getImageUrl(tvShow.poster_path, "w342")}
+                alt={tvShow.name}
                 className="w-48 h-72 object-cover rounded-xl shadow-2xl mx-auto md:mx-0"
               />
             </div>
 
-            {/* Movie Info */}
+            {/* TV Show Info */}
             <div className="flex-1">
               <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                {movie.title || movie.name}
+                {tvShow.name}
               </h1>
 
-              {movieDetails?.tagline && (
+              {tvDetails?.tagline && (
                 <p className="text-purple-400 italic mb-4">
-                  {movieDetails.tagline}
+                  {tvDetails.tagline}
                 </p>
               )}
 
@@ -96,27 +84,34 @@ const MovieModal = ({ movie, onClose }) => {
                 <div className="flex items-center gap-2 bg-yellow-500/20 px-3 py-1 rounded-full">
                   <Star className="w-5 h-5 text-yellow-400 fill-current" />
                   <span className="text-white font-medium">
-                    {movie.vote_average?.toFixed(1)}/10
+                    {tvShow.vote_average?.toFixed(1)}/10
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2 text-slate-300">
                   <Calendar className="w-4 h-4" />
-                  <span>{new Date(movie.release_date || movie.first_air_date).getFullYear()}</span>
+                  <span>{formatDate(tvShow.first_air_date)}</span>
                 </div>
 
-                {movieDetails?.runtime && (
+                {tvDetails?.number_of_seasons && (
                   <div className="flex items-center gap-2 text-slate-300">
-                    <Clock className="w-4 h-4" />
-                    <span>{formatRuntime(movieDetails.runtime)}</span>
+                    <Tv className="w-4 h-4" />
+                    <span>{tvDetails.number_of_seasons} Season{tvDetails.number_of_seasons !== 1 ? 's' : ''}</span>
+                  </div>
+                )}
+
+                {tvDetails?.number_of_episodes && (
+                  <div className="flex items-center gap-2 text-slate-300">
+                    <Play className="w-4 h-4" />
+                    <span>{tvDetails.number_of_episodes} Episodes</span>
                   </div>
                 )}
               </div>
 
               {/* Genres */}
-              {movieDetails?.genres && (
+              {tvDetails?.genres && (
                 <div className="flex flex-wrap gap-2 mb-6">
-                  {movieDetails.genres.map((genre) => (
+                  {tvDetails.genres.map((genre) => (
                     <span
                       key={genre.id}
                       className="bg-purple-600/30 text-purple-300 px-3 py-1 rounded-full text-sm"
@@ -133,76 +128,43 @@ const MovieModal = ({ movie, onClose }) => {
                   Overview
                 </h3>
                 <p className="text-slate-300 leading-relaxed">
-                  {movie.overview || "No overview available."}
+                  {tvShow.overview || "No overview available."}
                 </p>
               </div>
 
               {/* Additional Details */}
-              {!loading && movieDetails && (
+              {!loading && tvDetails && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  {/* Movie specific details */}
-                  {movieDetails.budget > 0 && (
-                    <div>
-                      <h4 className="text-white font-medium mb-1">Budget</h4>
-                      <p className="text-slate-400">
-                        {formatCurrency(movieDetails.budget)}
-                      </p>
-                    </div>
-                  )}
-
-                  {movieDetails.revenue > 0 && (
-                    <div>
-                      <h4 className="text-white font-medium mb-1">Revenue</h4>
-                      <p className="text-slate-400">
-                        {formatCurrency(movieDetails.revenue)}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* TV show specific details */}
-                  {movieDetails.number_of_seasons && (
-                    <div>
-                      <h4 className="text-white font-medium mb-1">Seasons</h4>
-                      <p className="text-slate-400">
-                        {movieDetails.number_of_seasons}
-                      </p>
-                    </div>
-                  )}
-
-                  {movieDetails.number_of_episodes && (
-                    <div>
-                      <h4 className="text-white font-medium mb-1">Episodes</h4>
-                      <p className="text-slate-400">
-                        {movieDetails.number_of_episodes}
-                      </p>
-                    </div>
-                  )}
-
-                  {movieDetails.status && (
+                  {tvDetails.status && (
                     <div>
                       <h4 className="text-white font-medium mb-1">Status</h4>
-                      <p className="text-slate-400">
-                        {movieDetails.status}
-                      </p>
+                      <p className="text-slate-400">{tvDetails.status}</p>
                     </div>
                   )}
 
-                  {movieDetails.production_companies?.length > 0 && (
+                  {tvDetails.networks?.length > 0 && (
                     <div>
-                      <h4 className="text-white font-medium mb-1">
-                        Production
-                      </h4>
+                      <h4 className="text-white font-medium mb-1">Network</h4>
                       <p className="text-slate-400">
-                        {movieDetails.production_companies[0].name}
+                        {tvDetails.networks[0].name}
                       </p>
                     </div>
                   )}
 
-                  {movieDetails.spoken_languages?.length > 0 && (
+                  {tvDetails.created_by?.length > 0 && (
+                    <div>
+                      <h4 className="text-white font-medium mb-1">Created By</h4>
+                      <p className="text-slate-400">
+                        {tvDetails.created_by.map(creator => creator.name).join(', ')}
+                      </p>
+                    </div>
+                  )}
+
+                  {tvDetails.spoken_languages?.length > 0 && (
                     <div>
                       <h4 className="text-white font-medium mb-1">Language</h4>
                       <p className="text-slate-400">
-                        {movieDetails.spoken_languages[0].english_name}
+                        {tvDetails.spoken_languages[0].english_name}
                       </p>
                     </div>
                   )}
@@ -210,13 +172,13 @@ const MovieModal = ({ movie, onClose }) => {
               )}
 
               {/* Cast */}
-              {movieDetails?.credits?.cast && (
+              {tvDetails?.credits?.cast && (
                 <div className="mb-6">
                   <h3 className="text-xl font-semibold text-white mb-3">
                     Cast
                   </h3>
                   <div className="flex flex-wrap gap-2">
-                    {movieDetails.credits.cast.slice(0, 8).map((actor) => (
+                    {tvDetails.credits.cast.slice(0, 8).map((actor) => (
                       <div
                         key={actor.id}
                         className="bg-slate-800 px-3 py-2 rounded-lg text-sm"
@@ -234,11 +196,11 @@ const MovieModal = ({ movie, onClose }) => {
               )}
 
               {/* Trailer Button */}
-              {movieDetails?.videos?.results?.length > 0 && (
+              {tvDetails?.videos?.results?.length > 0 && (
                 <div className="flex gap-3">
                   <button
                     onClick={() => {
-                      const trailer = movieDetails.videos.results.find(
+                      const trailer = tvDetails.videos.results.find(
                         (video) =>
                           video.type === "Trailer" && video.site === "YouTube"
                       );
@@ -264,4 +226,4 @@ const MovieModal = ({ movie, onClose }) => {
   );
 };
 
-export default MovieModal;
+export default TVModal;
