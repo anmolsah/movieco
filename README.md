@@ -1,7 +1,7 @@
 # 🎬 Movieco - AI-Powered Movie & TV Discovery Platform
 
 <div align="center">
-  <img src="./movieco/src/assets/logo5.png" alt="CineAI Banner" width="100%" height="200" style="object-fit: cover; border-radius: 10px;">
+  <img src="./movieco/src/assets/logo5.png" alt="CineAI Banner" width="100%" height="500" style="object-fit: cover; border-radius: 10px;">
   
   [![React](https://img.shields.io/badge/React-18.3.1-blue.svg)](https://reactjs.org/)
   [![Vite](https://img.shields.io/badge/Vite-5.4.2-646CFF.svg)](https://vitejs.dev/)
