@@ -17,7 +17,7 @@ const AIMovieBotComponent = ({
       id: 1,
       type: "bot",
       content:
-        "Hi! I'm your AI movie discovery assistant. Tell me what you're in the mood for and I'll find the perfect movies for you!",
+        "Hi! I'm your Movieco AI discovery assistant. Tell me what you're in the mood for and I'll find the perfect movies for you!",
       timestamp: new Date(),
     },
   ]);
