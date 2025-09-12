@@ -1,10 +1,14 @@
 import { TMDB_API_KEY, API_ENDPOINTS } from "../config/api.js";
+import AuthService from "./authService.js";
 
 class MovieService {
   async fetchMovies(endpoint, page = 1) {
     try {
+      const userPreferences = AuthService.getUserPreferences();
+      const includeAdult = userPreferences.adultContent || false;
+      
       const response = await fetch(
-        `${endpoint}?api_key=${TMDB_API_KEY}&page=${page}`
+        `${endpoint}?api_key=${TMDB_API_KEY}&page=${page}&include_adult=${includeAdult}`
       );
       if (!response.ok) throw new Error("Failed to fetch movies");
       return await response.json();
@@ -16,11 +20,14 @@ class MovieService {
 
   async searchMovies(query, page = 1) {
     try {
+      const userPreferences = AuthService.getUserPreferences();
+      const includeAdult = userPreferences.adultContent || false;
+      
       const response = await fetch(
         `${API_ENDPOINTS.search
         }?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(
           query
-        )}&page=${page}`
+        )}&page=${page}&include_adult=${includeAdult}`
       );
       if (!response.ok) throw new Error("Failed to search movies");
       return await response.json();

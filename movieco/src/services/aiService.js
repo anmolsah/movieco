@@ -23,6 +23,10 @@ class AIService {
 
       const recommendations = movieList
         .filter((movie) => {
+          // Filter out adult content if user preference is disabled
+          if (!userPreferences.adultContent && movie.adult) {
+            return false;
+          }
 
           if (genres.length > 0) {
             const movieGenres = movie.genre_ids || [];

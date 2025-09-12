@@ -1,9 +1,13 @@
 import { TMDB_API_KEY, API_ENDPOINTS } from '../config/api.js';
+import AuthService from './authService.js';
 
 class TVService {
   async fetchTVShows(endpoint, page = 1) {
     try {
-      const response = await fetch(`${endpoint}?api_key=${TMDB_API_KEY}&page=${page}`);
+      const userPreferences = AuthService.getUserPreferences();
+      const includeAdult = userPreferences.adultContent || false;
+      
+      const response = await fetch(`${endpoint}?api_key=${TMDB_API_KEY}&page=${page}&include_adult=${includeAdult}`);
       if (!response.ok) throw new Error('Failed to fetch TV shows');
       return await response.json();
     } catch (error) {
@@ -14,8 +18,11 @@ class TVService {
 
   async searchTVShows(query, page = 1) {
     try {
+      const userPreferences = AuthService.getUserPreferences();
+      const includeAdult = userPreferences.adultContent || false;
+      
       const response = await fetch(
-        `${API_ENDPOINTS.searchTv}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&page=${page}`
+        `${API_ENDPOINTS.searchTv}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&page=${page}&include_adult=${includeAdult}`
       );
       if (!response.ok) throw new Error('Failed to search TV shows');
       return await response.json();

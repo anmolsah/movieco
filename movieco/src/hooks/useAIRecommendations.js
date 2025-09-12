@@ -22,6 +22,7 @@ export const useAIRecommendations = (
         ...prev,
         genres: prefs.favoriteGenres || [],
         minRating: 6.0,
+        adultContent: prefs.adultContent || false,
       }));
     }
   }, [user, isAuthenticated]);

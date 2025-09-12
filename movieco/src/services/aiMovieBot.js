@@ -1,5 +1,6 @@
 import { GEMINI_API_KEY, GEMINI_API_URL } from "../config/api.js";
 import { TMDB_API_KEY, TMDB_BASE_URL } from "../config/api.js";
+import AuthService from "./authService.js";
 
 class AIMovieBot {
   constructor() {
@@ -332,6 +333,11 @@ class AIMovieBot {
         params.append("vote_average.gte", minRating.toString());
       }
 
+      // Add adult content preference
+      const userPreferences = AuthService.getUserPreferences();
+      const includeAdult = userPreferences.adultContent || false;
+      params.append("include_adult", includeAdult.toString());
+
       params.append("sort_by", "popularity.desc");
       params.append("page", "1");
 
@@ -532,6 +538,12 @@ class AIMovieBot {
 
   filterMoviePool(analysis, moviePool) {
     let filteredMovies = [...moviePool];
+
+    // Filter out adult content if user preference is disabled
+    const userPreferences = AuthService.getUserPreferences();
+    if (!userPreferences.adultContent) {
+      filteredMovies = filteredMovies.filter((movie) => !movie.adult);
+    }
 
     const allGenres = [...analysis.genres];
     if (analysis.geminiGenres) {
