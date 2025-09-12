@@ -6,7 +6,6 @@ class AIMovieBot {
     this.apiKey = GEMINI_API_KEY;
     this.apiUrl = GEMINI_API_URL;
 
-    // Genre mapping for better understanding
     this.genreMap = {
       action: 28,
       adventure: 12,
@@ -31,23 +30,21 @@ class AIMovieBot {
       "tv movie": 10770,
     };
 
-    // Mood to genre mapping
     this.moodToGenres = {
-      happy: [35, 10751, 16], // Comedy, Family, Animation
-      sad: [18, 10749], // Drama, Romance
-      excited: [28, 12, 53], // Action, Adventure, Thriller
-      scared: [27, 53], // Horror, Thriller
-      romantic: [10749, 35], // Romance, Comedy
-      adventurous: [12, 14, 878], // Adventure, Fantasy, Sci-Fi
-      nostalgic: [36, 18], // History, Drama
-      funny: [35, 16], // Comedy, Animation
-      intense: [53, 80, 27], // Thriller, Crime, Horror
-      relaxed: [10751, 99], // Family, Documentary
-      inspiring: [18, 36, 10751], // Drama, History, Family
-      mysterious: [9648, 53, 80], // Mystery, Thriller, Crime
+      happy: [35, 10751, 16],
+      sad: [18, 10749],
+      excited: [28, 12, 53],
+      scared: [27, 53],
+      romantic: [10749, 35],
+      adventurous: [12, 14, 878],
+      nostalgic: [36, 18],
+      funny: [35, 16],
+      intense: [53, 80, 27],
+      relaxed: [10751, 99],
+      inspiring: [18, 36, 10751],
+      mysterious: [9648, 53, 80],
     };
 
-    // Country codes mapping
     this.countryMap = {
       usa: "US",
       america: "US",
@@ -74,7 +71,6 @@ class AIMovieBot {
       argentina: "AR",
     };
 
-    // Time period keywords
     this.timePeriods = {
       recent: {
         from: new Date().getFullYear() - 2,
@@ -82,7 +78,7 @@ class AIMovieBot {
       },
       new: { from: new Date().getFullYear() - 1, to: new Date().getFullYear() },
       classic: { from: 1950, to: 1990 },
-      retro: { from: 1950, to: 1990 }, // Added retro
+      retro: { from: 1950, to: 1990 },
       old: { from: 1900, to: 1980 },
       "90s": { from: 1990, to: 1999 },
       "2000s": { from: 2000, to: 2009 },
@@ -90,7 +86,6 @@ class AIMovieBot {
       "2020s": { from: 2020, to: new Date().getFullYear() },
     };
 
-    // TMDB region codes for countries
     this.tmdbRegionMap = {
       US: "US",
       GB: "GB",
@@ -111,7 +106,6 @@ class AIMovieBot {
     };
   }
 
-  // Main analysis of user input
   async analyzeUserInput(input) {
     try {
       const analysis = {
@@ -140,7 +134,6 @@ class AIMovieBot {
     }
   }
 
-  // Call Gemini AI (fallback if fails)
   async analyzeWithGemini(text) {
     try {
       const prompt = `
@@ -201,14 +194,12 @@ class AIMovieBot {
     }
   }
 
-  // Enhanced analysis using Gemini insights
   async enhancedAnalyzeUserInput(input) {
     try {
       const geminiAnalysis = await this.analyzeWithGemini(input);
       const basicAnalysis = await this.analyzeUserInput(input);
 
       if (geminiAnalysis) {
-        // Merge Gemini insights with basic analysis
         return {
           ...basicAnalysis,
           geminiGenres: geminiAnalysis.genres || [],
@@ -228,7 +219,6 @@ class AIMovieBot {
     }
   }
 
-  // Convert genre names to TMDB genre IDs
   mapGenreNamesToIds(genreNames) {
     const genreNameToId = {
       action: 28,
@@ -257,7 +247,6 @@ class AIMovieBot {
       .filter((id) => id !== undefined);
   }
 
-  // Convert country names to TMDB region codes
   mapCountryNamesToCodes(countryNames) {
     const countryNameToCode = {
       usa: "US",
@@ -288,7 +277,6 @@ class AIMovieBot {
       .filter((code) => code !== undefined);
   }
 
-  // Fetch movies from TMDB based on analysis
   async fetchMoviesFromTMDB(analysis) {
     try {
       let url = `${TMDB_BASE_URL}/discover/movie?api_key=${TMDB_API_KEY}`;
@@ -312,7 +300,6 @@ class AIMovieBot {
         params.append("with_genres", uniqueGenres.join(","));
       }
 
-      // Add country/region filters
       const allCountries = [...analysis.countries];
       if (analysis.geminiCountries) {
         const geminiCountryCodes = this.mapCountryNamesToCodes(
@@ -326,12 +313,10 @@ class AIMovieBot {
         params.append("with_origin_country", uniqueCountries.join(","));
       }
 
-      // Add language filter
       if (analysis.geminiLanguage) {
         params.append("with_original_language", analysis.geminiLanguage);
       }
 
-      // Add time period filter
       const timePeriod = analysis.timePeriod || analysis.geminiTimeperiod;
       if (timePeriod) {
         if (timePeriod.from) {
@@ -342,17 +327,14 @@ class AIMovieBot {
         }
       }
 
-      // Add rating filter
       const minRating = analysis.rating?.min || analysis.geminiRating;
       if (minRating) {
         params.append("vote_average.gte", minRating.toString());
       }
 
-      // Add sorting
       params.append("sort_by", "popularity.desc");
       params.append("page", "1");
 
-      // Make the API call
       const finalUrl = `${url}&${params.toString()}`;
       console.log("TMDB API URL:", finalUrl);
 
@@ -371,7 +353,6 @@ class AIMovieBot {
     }
   }
 
-  // Genre extraction (supports multiple genres)
   extractGenres(input) {
     const genres = [];
     const lowerInput = input.toLowerCase();
@@ -383,7 +364,6 @@ class AIMovieBot {
     return [...new Set(genres)];
   }
 
-  // Mood extraction
   extractMoods(input, geminiAnalysis) {
     const moods = [];
     const lowerInput = input.toLowerCase();
@@ -422,7 +402,6 @@ class AIMovieBot {
     return [...new Set(moods)];
   }
 
-  // Country extraction
   extractCountries(input) {
     const countries = [];
     const lowerInput = input.toLowerCase();
@@ -434,7 +413,6 @@ class AIMovieBot {
     return [...new Set(countries)];
   }
 
-  // Time period extraction
   extractTimePeriod(input) {
     const lowerInput = input.toLowerCase();
     for (const [period, range] of Object.entries(this.timePeriods)) {
@@ -450,7 +428,6 @@ class AIMovieBot {
     return null;
   }
 
-  // Rating extraction
   extractRating(input) {
     const lowerInput = input.toLowerCase();
     if (
@@ -469,7 +446,6 @@ class AIMovieBot {
     return null;
   }
 
-  // Keyword extraction
   extractKeywords(input) {
     const commonWords = [
       "movie",
@@ -503,30 +479,25 @@ class AIMovieBot {
     };
   }
 
-  // Helper to check time period
   inTimePeriod(releaseDate, timePeriod) {
     if (!releaseDate) return false;
     const year = new Date(releaseDate).getFullYear();
     return year >= timePeriod.from && year <= timePeriod.to;
   }
 
-  // Filter movies based on analysis
   async findMovies(analysis, moviePool = []) {
     try {
       console.log("Finding movies with analysis:", analysis);
 
-      // Use enhanced analysis with Gemini
       const enhancedAnalysis = await this.enhancedAnalyzeUserInput(
         analysis.originalInput
       );
       console.log("Enhanced analysis:", enhancedAnalysis);
 
-      // Fetch movies from TMDB based on analysis
       const tmdbMovies = await this.fetchMoviesFromTMDB(enhancedAnalysis);
       console.log("TMDB movies found:", tmdbMovies.length);
 
       if (tmdbMovies.length > 0) {
-        // Use TMDB results
         return {
           movies: tmdbMovies.slice(0, 20),
           analysis: enhancedAnalysis,
@@ -534,7 +505,6 @@ class AIMovieBot {
           source: "TMDB API",
         };
       } else {
-        // Fallback to moviePool filtering if TMDB returns no results
         console.log("No TMDB results, falling back to moviePool filtering");
         const filteredMovies = this.filterMoviePool(
           enhancedAnalysis,
@@ -551,7 +521,6 @@ class AIMovieBot {
     } catch (error) {
       console.error("Error in findMovies:", error);
 
-      // Final fallback
       return {
         movies: moviePool.slice(0, 10),
         analysis,
@@ -561,11 +530,9 @@ class AIMovieBot {
     }
   }
 
-  // Fallback filtering for moviePool
   filterMoviePool(analysis, moviePool) {
     let filteredMovies = [...moviePool];
 
-    // Apply filters similar to before but with enhanced analysis
     const allGenres = [...analysis.genres];
     if (analysis.geminiGenres) {
       const geminiGenreIds = this.mapGenreNamesToIds(analysis.geminiGenres);
@@ -580,7 +547,6 @@ class AIMovieBot {
       );
     }
 
-    // Apply other filters...
     const allCountries = [...analysis.countries];
     if (analysis.geminiCountries) {
       const geminiCountryCodes = this.mapCountryNamesToCodes(
@@ -595,7 +561,6 @@ class AIMovieBot {
       );
     }
 
-    // Sort by relevance
     filteredMovies.sort(
       (a, b) =>
         b.popularity * 0.3 +
@@ -610,7 +575,6 @@ class AIMovieBot {
     };
   }
 
-  // Check if movie matches country
   countryMatch(movie, countries) {
     const countryToLanguage = { JP: "ja", KR: "ko", CN: "zh", IN: "hi" };
     const langMatch = countries.some(
@@ -622,11 +586,9 @@ class AIMovieBot {
     return langMatch || prodMatch;
   }
 
-  // Explanation for results
   generateExplanation(analysis, results) {
     const explanations = [];
 
-    // Include Gemini-detected genres
     const allGenres = [...analysis.genres];
     if (analysis.geminiGenres) {
       allGenres.push(
@@ -658,7 +620,6 @@ class AIMovieBot {
       }
     }
 
-    // Include moods and emotions
     const allEmotions = [...analysis.moods];
     if (analysis.geminiEmotions) {
       allEmotions.push(...analysis.geminiEmotions);
