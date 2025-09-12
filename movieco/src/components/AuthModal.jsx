@@ -32,7 +32,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    setError(""); // Clear error when user types
+    setError(""); 
   };
 
   const validateForm = () => {
@@ -102,7 +102,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
       if (result.error) {
         setError(result.error);
       } else if (result.user || mode === "forgot") {
-        // For both signin and signup, redirect to home page
+        
         onSuccess();
         onClose();
       }
@@ -309,14 +309,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
                   Sign up
                 </button>
               </p>
-              <p className="text-slate-400 text-sm">
-                {/* <button
-                  onClick={() => switchMode("forgot")}
-                  className="text-purple-400 hover:text-purple-300 font-medium"
-                >
-                  Forgot your password?
-                </button> */}
-              </p>
+              
             </>
           )}
 

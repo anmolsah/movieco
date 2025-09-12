@@ -56,20 +56,20 @@ const AIMovieBotComponent = ({
     setIsLoading(true);
 
     try {
-      // Analyze user input
+     
       const analysis = await AIMovieBot.enhancedAnalyzeUserInput(input.trim());
 
-      // Find movies based on analysis
+      
       const results = await AIMovieBot.findMovies(analysis, moviePool);
 
-      // Generate explanation
+      
       const explanation = AIMovieBot.generateExplanation(analysis, results);
 
       const botMessage = {
         id: Date.now() + 1,
         type: "bot",
         content: explanation,
-        movies: results.movies.slice(0, 8), // Show top 8 results
+        movies: results.movies.slice(0, 8), 
         analysis: analysis,
         timestamp: new Date(),
       };
