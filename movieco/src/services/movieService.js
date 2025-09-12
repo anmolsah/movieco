@@ -106,7 +106,7 @@ class MovieService {
       const moviesData = await this.fetchMovies(endpoint, page);
       if (!moviesData.results) return moviesData;
 
-      // Fetch watch providers for each movie (limit to first 10 for performance)
+
       const moviesWithProviders = await Promise.all(
         moviesData.results.slice(0, 10).map(async (movie) => {
           const providers = await this.getWatchProviders(movie.id, 'movie', region);
@@ -114,7 +114,7 @@ class MovieService {
         })
       );
 
-      // Add remaining movies without providers to avoid too many API calls
+
       const remainingMovies = moviesData.results.slice(10).map(movie => ({ ...movie, watchProviders: null }));
 
       return {
@@ -132,7 +132,7 @@ class MovieService {
       const tvData = await this.fetchMovies(endpoint, page);
       if (!tvData.results) return tvData;
 
-      // Fetch watch providers for each TV show (limit to first 10 for performance)
+
       const tvWithProviders = await Promise.all(
         tvData.results.slice(0, 10).map(async (tvShow) => {
           const providers = await this.getWatchProviders(tvShow.id, 'tv', region);
@@ -140,7 +140,7 @@ class MovieService {
         })
       );
 
-      // Add remaining TV shows without providers
+
       const remainingTVShows = tvData.results.slice(10).map(tvShow => ({ ...tvShow, watchProviders: null }));
 
       return {
@@ -153,7 +153,7 @@ class MovieService {
     }
   }
 
-  // Enhanced methods that include watch providers
+
   async getNowPlayingWithProviders(page = 1, region = 'US') {
     return this.getMoviesWithProviders(API_ENDPOINTS.nowPlaying, page, region);
   }

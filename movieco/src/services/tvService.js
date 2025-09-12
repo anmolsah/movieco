@@ -85,7 +85,7 @@ class TVService {
       const tvData = await this.fetchTVShows(endpoint, page);
       if (!tvData.results) return tvData;
 
-      // Fetch watch providers for each TV show (limit to first 10 for performance)
+
       const tvWithProviders = await Promise.all(
         tvData.results.slice(0, 10).map(async (tvShow) => {
           const providers = await this.getWatchProviders(tvShow.id, region);
@@ -93,7 +93,7 @@ class TVService {
         })
       );
 
-      // Add remaining TV shows without providers
+
       const remainingTVShows = tvData.results.slice(10).map(tvShow => ({ ...tvShow, watchProviders: null }));
 
       return {
@@ -106,7 +106,7 @@ class TVService {
     }
   }
 
-  // Enhanced methods that include watch providers
+
   async getPopularTVWithProviders(page = 1, region = 'US') {
     return this.getTVShowsWithProviders(API_ENDPOINTS.tvPopular, page, region);
   }

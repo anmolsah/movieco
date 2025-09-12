@@ -8,7 +8,7 @@ class AIService {
 
   async getMovieRecommendations(userPreferences, movieList) {
     try {
-      // Use Gemini AI for intelligent recommendations
+
       const prompt = `
         Based on these user preferences, recommend movies from the provided list:
         - Preferred genres: ${userPreferences.genres?.join(", ") || "Any"}
@@ -17,13 +17,13 @@ class AIService {
         Analyze the user's taste and provide personalized recommendations.
       `;
 
-      // For now, use the existing logic with enhanced filtering
+
       const genres = userPreferences.genres || [];
       const ratingThreshold = userPreferences.minRating || 6.0;
 
       const recommendations = movieList
         .filter((movie) => {
-          // Filter by genres if specified
+
           if (genres.length > 0) {
             const movieGenres = movie.genre_ids || [];
             const hasPreferredGenre = genres.some((genreId) =>
@@ -32,11 +32,10 @@ class AIService {
             if (!hasPreferredGenre) return false;
           }
 
-          // Filter by rating
+
           return movie.vote_average >= ratingThreshold;
         })
         .sort((a, b) => {
-          // Sort by popularity and rating
           const scoreA = a.popularity * 0.3 + a.vote_average * 0.7;
           const scoreB = b.popularity * 0.3 + b.vote_average * 0.7;
           return scoreB - scoreA;
@@ -46,17 +45,17 @@ class AIService {
       return recommendations;
     } catch (error) {
       console.error("Gemini AI recommendation error:", error);
-      return movieList.slice(0, 10); // Fallback to top movies
+      return movieList.slice(0, 10);
     }
   }
 
   async analyzeMoviePreferences(watchHistory, ratings) {
-    // Analyze user's movie watching patterns
+
     const genrePreferences = {};
     const ratingSum = ratings.reduce((sum, rating) => sum + rating, 0);
     const avgRating = ratingSum / ratings.length || 7.0;
 
-    // Count genre preferences from watch history
+
     watchHistory.forEach((movie) => {
       if (movie.genre_ids) {
         movie.genre_ids.forEach((genreId) => {
@@ -65,7 +64,7 @@ class AIService {
       }
     });
 
-    // Get top 3 preferred genres
+
     const topGenres = Object.entries(genrePreferences)
       .sort(([, a], [, b]) => b - a)
       .slice(0, 3)

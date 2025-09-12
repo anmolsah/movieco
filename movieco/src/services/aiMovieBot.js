@@ -282,7 +282,7 @@ class AIMovieBot {
       let url = `${TMDB_BASE_URL}/discover/movie?api_key=${TMDB_API_KEY}`;
       const params = new URLSearchParams();
 
-      // Add genre filters
+
       const allGenres = [...analysis.genres];
       if (analysis.geminiGenres) {
         const geminiGenreIds = this.mapGenreNamesToIds(analysis.geminiGenres);
@@ -601,7 +601,7 @@ class AIMovieBot {
       explanations.push(`${allGenres.join(", ")} movies`);
     }
 
-    // Include Gemini-detected countries
+    
     const allCountries = [...analysis.countries];
     if (analysis.geminiCountries) {
       allCountries.push(...analysis.geminiCountries);
@@ -610,7 +610,7 @@ class AIMovieBot {
       explanations.push(`from ${allCountries.join(", ")}`);
     }
 
-    // Include time period
+
     const timePeriod = analysis.timePeriod || analysis.geminiTimeperiod;
     if (timePeriod) {
       if (timePeriod.from === timePeriod.to) {

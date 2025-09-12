@@ -5,7 +5,7 @@ class WatchlistService {
     this.tableName = "watchlist";
   }
 
-  // Get user's watchlist from Supabase
+
   async getUserWatchlist(userId) {
     try {
       if (!userId) {
@@ -24,7 +24,7 @@ class WatchlistService {
         return [];
       }
 
-      // Return the movie data from each watchlist item
+
       return data.map((item) => ({
         ...item.movie_data,
         watchlist_id: item.id,
@@ -36,7 +36,7 @@ class WatchlistService {
     }
   }
 
-  // Add movie to user's watchlist
+
   async addToWatchlist(userId, movie) {
     try {
       if (!userId) {
@@ -54,7 +54,7 @@ class WatchlistService {
         .single();
 
       if (error) {
-        // Handle duplicate entry error
+
         if (error.code === "23505") {
           throw new Error("Movie is already in your watchlist");
         }
@@ -72,7 +72,7 @@ class WatchlistService {
     }
   }
 
-  // Remove movie from user's watchlist
+
   async removeFromWatchlist(userId, movieId) {
     try {
       if (!userId) {
@@ -96,7 +96,7 @@ class WatchlistService {
     }
   }
 
-  // Check if movie is in user's watchlist
+
   async isInWatchlist(userId, movieId) {
     try {
       if (!userId) return false;
@@ -120,7 +120,7 @@ class WatchlistService {
     }
   }
 
-  // Get watchlist count for user
+
   async getWatchlistCount(userId) {
     try {
       if (!userId) return 0;
@@ -142,7 +142,7 @@ class WatchlistService {
     }
   }
 
-  // Clear user's entire watchlist
+
   async clearWatchlist(userId) {
     try {
       if (!userId) {
@@ -165,7 +165,7 @@ class WatchlistService {
     }
   }
 
-  // Get recently added movies to watchlist
+
   async getRecentlyAdded(userId, limit = 5) {
     try {
       if (!userId) return [];
@@ -193,7 +193,7 @@ class WatchlistService {
     }
   }
 
-  // Sync local watchlist with Supabase (for migration)
+
   async syncLocalWatchlist(userId, localWatchlist) {
     try {
       if (!userId || !localWatchlist.length) return;

@@ -55,7 +55,7 @@ class UserStatsService {
       });
       stats.moviesWatched = stats.watchHistory.length;
 
-      // Update favorite genres
+
       if (movie.genre_ids) {
         movie.genre_ids.forEach((genreId) => {
           stats.favoriteGenres[genreId] =
@@ -82,10 +82,10 @@ class UserStatsService {
     const oldRating = stats.ratings[movieId];
 
     if (oldRating) {
-      // Update existing rating
+
       stats.ratingSum = stats.ratingSum - oldRating + rating;
     } else {
-      // New rating
+
       stats.ratingSum += rating;
       stats.totalRatings += 1;
     }

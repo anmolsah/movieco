@@ -7,13 +7,13 @@ class AuthService {
     this.listeners = [];
     this.authSubscription = null;
 
-    // Initialize auth state
+
     this.initializeAuth();
   }
 
   async initializeAuth() {
     try {
-      // Get current session
+
       const {
         data: { session },
       } = await supabase.auth.getSession();
@@ -23,7 +23,7 @@ class AuthService {
         this.isAuthenticated = true;
       }
 
-      // Listen for auth changes
+
       const {
         data: { subscription },
       } = supabase.auth.onAuthStateChange((event, session) => {
@@ -189,7 +189,7 @@ class AuthService {
     return this.isAuthenticated;
   }
 
-  // Preferences management (stored in localStorage for demo)
+
   getUserPreferences() {
     const userId = this.user?.id;
     if (!userId) return this.getDefaultPreferences();
@@ -232,11 +232,11 @@ class AuthService {
     }
   }
 
-  // Event listeners for auth state changes
+
   onAuthStateChanged(callback) {
     this.listeners.push(callback);
 
-    // Return unsubscribe function
+
     return () => {
       this.listeners = this.listeners.filter(
         (listener) => listener !== callback
@@ -254,7 +254,7 @@ class AuthService {
     });
   }
 
-  // Cleanup
+
   destroy() {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
