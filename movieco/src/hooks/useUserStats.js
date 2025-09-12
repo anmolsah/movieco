@@ -16,7 +16,7 @@ export const useUserStats = (user, watchlist) => {
     }
   }, [user]);
 
-  // Update watchlist count when watchlist changes
+
   useEffect(() => {
     if (user && userStats) {
       const updatedStats = UserStatsService.updateWatchlistCount(

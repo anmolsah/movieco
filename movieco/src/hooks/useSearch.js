@@ -25,7 +25,7 @@ export const useSearch = (updateLoadingState) => {
 
   const handleFilter = (filters) => {
     console.log("Applying filters:", filters);
-    // Filter logic can be implemented here
+    // Filter logic will be implemented here
   };
 
   return {

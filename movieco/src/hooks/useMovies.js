@@ -22,11 +22,11 @@ export const useMovies = (region = 'US') => {
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        // Load genres
+        
         const genresData = await MovieService.getGenres();
         setGenres(genresData);
 
-        // Load movie categories with watch providers
+       
         const [nowPlaying, upcoming, popular, topRated] = await Promise.all([
           MovieService.getNowPlayingWithProviders(1, region),
           MovieService.getUpcomingWithProviders(1, region),
@@ -39,7 +39,7 @@ export const useMovies = (region = 'US') => {
         setPopularMovies(popular.results || []);
         setTopRatedMovies(topRated.results || []);
 
-        // Combine all movies for AI bot
+       
         const combined = [
           ...(nowPlaying.results || []),
           ...(upcoming.results || []),
@@ -47,14 +47,14 @@ export const useMovies = (region = 'US') => {
           ...(topRated.results || []),
         ];
 
-        // Remove duplicates based on movie ID
+        
         const uniqueMovies = combined.filter(
           (movie, index, self) =>
             index === self.findIndex((m) => m.id === movie.id)
         );
         setAllMovies(uniqueMovies);
 
-        // Set featured movie (highest rated from popular)
+        
         if (popular.results && popular.results.length > 0) {
           const featured = popular.results.sort(
             (a, b) => b.vote_average - a.vote_average
@@ -62,7 +62,7 @@ export const useMovies = (region = 'US') => {
           setFeaturedMovie(featured);
         }
 
-        // Update loading states
+        
         setLoading({
           nowPlaying: false,
           upcoming: false,

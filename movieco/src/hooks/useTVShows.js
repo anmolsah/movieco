@@ -21,11 +21,11 @@ export const useTVShows = (region = 'US') => {
   useEffect(() => {
     const loadTVData = async () => {
       try {
-        // Load TV genres
+        
         const genresData = await TVService.getTVGenres();
         setTVGenres(genresData);
 
-        // Load TV show categories with watch providers
+        
         const [popular, topRated, onTheAir, airingToday] = await Promise.all([
           TVService.getPopularTVWithProviders(1, region),
           TVService.getTopRatedTVWithProviders(1, region),
@@ -38,7 +38,7 @@ export const useTVShows = (region = 'US') => {
         setOnTheAirTVShows(onTheAir.results || []);
         setAiringTodayTVShows(airingToday.results || []);
 
-        // Combine all TV shows
+        
         const combined = [
           ...(popular.results || []),
           ...(topRated.results || []),
@@ -46,20 +46,20 @@ export const useTVShows = (region = 'US') => {
           ...(airingToday.results || [])
         ];
 
-        // Remove duplicates based on TV show ID
+        
         const uniqueTVShows = combined.filter((show, index, self) =>
           index === self.findIndex(s => s.id === show.id)
         );
         setAllTVShows(uniqueTVShows);
 
-        // Set featured TV show (highest rated from popular)
+        
         if (popular.results && popular.results.length > 0) {
           const featured = popular.results
             .sort((a, b) => b.vote_average - a.vote_average)[0];
           setFeaturedTVShow(featured);
         }
 
-        // Update loading states
+        
         setLoading({
           popular: false,
           topRated: false,
