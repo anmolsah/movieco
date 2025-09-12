@@ -19,11 +19,11 @@ const Navigation = ({
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check initial auth state
+    
     setUser(AuthService.getCurrentUser());
     setIsAuthenticated(AuthService.isUserAuthenticated());
 
-    // Listen for auth state changes
+    
     const unsubscribe = AuthService.onAuthStateChanged(
       (user, authenticated) => {
         setUser(user);

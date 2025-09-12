@@ -9,7 +9,7 @@ const HeroSection = ({ featuredMovie, onMovieClick }) => {
   const [isMuted, setIsMuted] = useState(true);
   const [trailerLoaded, setTrailerLoaded] = useState(false);
 
-  // Fetch trailer data
+  
   useEffect(() => {
     const fetchTrailer = async () => {
       if (!featuredMovie?.id) return;
@@ -21,7 +21,7 @@ const HeroSection = ({ featuredMovie, onMovieClick }) => {
         );
         const data = await response.json();
         
-        // Find the first trailer or teaser
+      
         const trailer = data.results?.find(
           video => 
             video.type === 'Trailer' && 
@@ -36,7 +36,6 @@ const HeroSection = ({ featuredMovie, onMovieClick }) => {
         
         if (trailer) {
           setTrailerKey(trailer.key);
-          // Auto-play trailer after a short delay
           setTimeout(() => {
             setShowTrailer(true);
           }, 2000);
@@ -59,13 +58,6 @@ const HeroSection = ({ featuredMovie, onMovieClick }) => {
     setIsMuted(!isMuted);
   };
 
-  const handleTrailerEnd = () => {
-    setShowTrailer(false);
-    // Optionally restart after a delay
-    setTimeout(() => {
-      setShowTrailer(true);
-    }, 3000);
-  };
 
   if (!featuredMovie) {
     return (
@@ -102,9 +94,9 @@ const HeroSection = ({ featuredMovie, onMovieClick }) => {
             className="w-full h-full object-cover"
             style={{
               width: '100vw',
-              height: '56.25vw', // 16:9 aspect ratio
+              height: '56.25vw', 
               minHeight: '100vh',
-              minWidth: '177.78vh', // 16:9 aspect ratio
+              minWidth: '177.78vh', 
               position: 'absolute',
               top: '50%',
               left: '50%',

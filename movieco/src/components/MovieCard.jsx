@@ -32,9 +32,8 @@ const MovieCard = ({
   const handleWatchlistClick = (e) => {
     e.stopPropagation();
 
-    // Check if user is authenticated before allowing wishlist action
     if (onAuthRequired && !onAuthRequired()) {
-      return; // onAuthRequired will handle showing auth modal
+      return;
     }
 
     onAddToWatchlist(movie);

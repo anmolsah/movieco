@@ -11,7 +11,6 @@ const MovieModal = ({ movie, onClose }) => {
     const fetchMovieDetails = async () => {
       if (movie?.id) {
         setLoading(true);
-        // Check if it's a TV show (has 'name' instead of 'title' or has media_type)
         const isTvShow = movie.name || movie.media_type === 'tv' || movie.first_air_date;
         const details = isTvShow 
           ? await MovieService.getTvDetails(movie.id)
