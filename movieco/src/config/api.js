@@ -17,7 +17,6 @@ export const API_ENDPOINTS = {
   movieDetails: `${TMDB_BASE_URL}/movie`,
   genres: `${TMDB_BASE_URL}/genre/movie/list`,
   movieWatchProviders: `${TMDB_BASE_URL}/movie`,
-  // TV Shows endpoints
   tvPopular: `${TMDB_BASE_URL}/tv/popular`,
   tvTopRated: `${TMDB_BASE_URL}/tv/top_rated`,
   tvOnTheAir: `${TMDB_BASE_URL}/tv/on_the_air`,
