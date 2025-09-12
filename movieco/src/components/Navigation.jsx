@@ -2,7 +2,7 @@ import logo from "../assets/logo5.png";
 import React, { useState, useEffect } from "react";
 import { Film, Search, Heart, User, Menu, X, LogIn, Bot } from "lucide-react";
 import AuthService from "../services/authService.js";
-import RegionSelector from "./RegionSelector.jsx";
+
 
 const Navigation = ({
   activeTab,
@@ -12,8 +12,7 @@ const Navigation = ({
   onOpenProfile,
   onOpenAuth,
   onOpenAIBot,
-  selectedRegion,
-  onRegionChange,
+
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
@@ -99,13 +98,7 @@ const Navigation = ({
 
           {/* Right Actions */}
           <div className="flex items-center gap-3">
-            {/* Region Selector */}
-            <div className="hidden lg:block">
-              <RegionSelector 
-                selectedRegion={selectedRegion}
-                onRegionChange={onRegionChange}
-              />
-            </div>
+
 
             {/* AI Bot Button */}
             <button
@@ -174,13 +167,7 @@ const Navigation = ({
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-slate-800">
-            {/* Mobile Region Selector */}
-            <div className="px-3 py-2 mb-2">
-              <RegionSelector 
-                selectedRegion={selectedRegion}
-                onRegionChange={onRegionChange}
-              />
-            </div>
+
             <div className="space-y-2">
               {navItems.map((item) => (
                 <button

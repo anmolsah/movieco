@@ -20,7 +20,7 @@ import Footer from "./components/Footer.jsx";
 import AuthModal from "./components/AuthModal.jsx";
 import ProfileModal from "./components/ProfileModal.jsx";
 import AIMovieBot from "./components/AIMovieBot.jsx";
-import RegionSelector from "./components/RegionSelector.jsx";
+
 
 // Custom Hooks
 import { useAuth } from "./hooks/useAuth.js";
@@ -42,7 +42,7 @@ function App() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showAIBot, setShowAIBot] = useState(false);
-  const [selectedRegion, setSelectedRegion] = useState('US');
+
 
   // Custom Hooks
   const { user, isAuthenticated, checkAuthForWatchlist } = useAuth();
@@ -56,7 +56,7 @@ function App() {
     featuredMovie,
     loading,
     updateLoadingState,
-  } = useMovies(selectedRegion);
+  } = useMovies();
 
   const { watchlist, addToWatchlist } = useWatchlist(user, isAuthenticated);
   const { searchResults, handleSearch, handleFilter } =
@@ -80,7 +80,7 @@ function App() {
     featuredTVShow,
     loading: tvLoading,
     updateLoadingState: updateTVLoadingState,
-  } = useTVShows(selectedRegion);
+  } = useTVShows();
 
   // Event Handlers
   const handleWatchlistAction = (movie) => {
@@ -368,8 +368,7 @@ function App() {
         activeTab={activeTab}
         onTabChange={handleTabChange}
         watchlistCount={watchlist.length}
-        selectedRegion={selectedRegion}
-        onRegionChange={setSelectedRegion}
+
         onOpenSearch={() => {
           if (isAuthenticated) {
             setShowSearch(true);
