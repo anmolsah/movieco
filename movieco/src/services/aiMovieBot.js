@@ -1,11 +1,12 @@
-import { GEMINI_API_KEY, GEMINI_API_URL } from "../config/api.js";
+import { OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL } from "../config/api.js";
 import { TMDB_API_KEY, TMDB_BASE_URL } from "../config/api.js";
 import AuthService from "./authService.js";
 
 class AIMovieBot {
   constructor() {
-    this.apiKey = GEMINI_API_KEY;
-    this.apiUrl = GEMINI_API_URL;
+    this.apiKey = OPENROUTER_API_KEY;
+    this.apiUrl = OPENROUTER_API_URL;
+    this.model = OPENROUTER_MODEL;
 
     this.genreMap = {
       action: 28,
@@ -119,10 +120,10 @@ class AIMovieBot {
         originalInput: input.toLowerCase(),
       };
 
-      const geminiAnalysis = await this.analyzeWithGemini(input);
+      const aiAnalysis = await this.analyzeWithOpenRouter(input);
 
       analysis.genres = this.extractGenres(input);
-      analysis.moods = this.extractMoods(input, geminiAnalysis);
+      analysis.moods = this.extractMoods(input, aiAnalysis);
       analysis.countries = this.extractCountries(input);
       analysis.timePeriod = this.extractTimePeriod(input);
       analysis.rating = this.extractRating(input);
@@ -135,81 +136,102 @@ class AIMovieBot {
     }
   }
 
-  async analyzeWithGemini(text) {
+  async analyzeWithOpenRouter(text) {
     try {
-      const prompt = `
-        Analyze this movie request and extract detailed information in JSON format:
-        "${text}"
-        
-        Extract the following information:
-        1. genres: Array of genre names (action, comedy, drama, horror, romance, thriller, mystery, sci-fi, fantasy, animation, documentary, etc.)
-        2. countries: Array of country names or regions (USA, India, Japan, Korea, France, etc.)
-        3. timeperiod: Object with from/to years if mentioned (e.g., {"from": 1980, "to": 1990} for 80s movies)
-        4. emotions: Array of emotions/moods (happy, sad, romantic, scary, exciting, nostalgic, etc.)
-        5. keywords: Array of important keywords or themes
-        6. rating: Minimum rating preference if mentioned (e.g., 7.0 for "good movies")
-        7. language: Preferred language if mentioned (en, hi, ja, ko, etc.)
-        
-        Example for "retro comedy romance movies india":
-        {
-          "genres": ["comedy", "romance"],
-          "countries": ["India"],
-          "timeperiod": {"from": 1950, "to": 1990},
-          "emotions": ["happy", "romantic"],
-          "keywords": ["retro", "bollywood"],
-          "rating": null,
-          "language": "hi"
-        }
-        
-        Return only valid JSON without any additional text.
-      `;
+      const prompt = `Analyze this movie request and extract detailed information in JSON format:
+"${text}"
 
-      const response = await fetch(`${this.apiUrl}?key=${this.apiKey}`, {
+Extract the following information:
+1. genres: Array of genre names (action, comedy, drama, horror, romance, thriller, mystery, sci-fi, fantasy, animation, documentary, etc.)
+2. countries: Array of country names or regions (USA, India, Japan, Korea, France, etc.)
+3. timeperiod: Object with from/to years if mentioned (e.g., {"from": 1980, "to": 1990} for 80s movies)
+4. emotions: Array of emotions/moods (happy, sad, romantic, scary, exciting, nostalgic, etc.)
+5. keywords: Array of important keywords or themes
+6. rating: Minimum rating preference if mentioned (e.g., 7.0 for "good movies")
+7. language: Preferred language if mentioned (en, hi, ja, ko, etc.)
+
+Example for "retro comedy romance movies india":
+{
+  "genres": ["comedy", "romance"],
+  "countries": ["India"],
+  "timeperiod": {"from": 1950, "to": 1990},
+  "emotions": ["happy", "romantic"],
+  "keywords": ["retro", "bollywood"],
+  "rating": null,
+  "language": "hi"
+}
+
+Return only valid JSON without any additional text.`;
+
+      const response = await fetch(this.apiUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Authorization": `Bearer ${this.apiKey}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": window.location.origin,
+          "X-Title": "Movieco AI"
+        },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
+          model: this.model,
+          messages: [
+            {
+              role: "system",
+              content: "You are a movie analysis AI. Always respond with valid JSON only, no additional text or formatting."
+            },
+            {
+              role: "user",
+              content: prompt
+            }
+          ],
+          temperature: 0.3,
+          max_tokens: 500
         }),
       });
 
       if (!response.ok) {
-        throw new Error(`Gemini API error: ${response.status}`);
+        throw new Error(`OpenRouter API error: ${response.status}`);
       }
 
       const result = await response.json();
-      const generatedText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+      const generatedText = result.choices?.[0]?.message?.content;
 
       if (generatedText) {
         try {
+          // Try to extract JSON from the response
           const jsonMatch = generatedText.match(/\{[\s\S]*\}/);
-          if (jsonMatch) return JSON.parse(jsonMatch[0]);
+          if (jsonMatch) {
+            return JSON.parse(jsonMatch[0]);
+          }
+          // If no JSON brackets found, try parsing the whole response
+          return JSON.parse(generatedText.trim());
         } catch (parseError) {
-          console.warn("Failed to parse Gemini JSON response:", parseError);
+          console.warn("Failed to parse OpenRouter JSON response:", parseError);
+          console.log("Raw response:", generatedText);
         }
       }
 
       return null;
     } catch (error) {
-      console.error("Gemini analysis error:", error);
+      console.error("OpenRouter analysis error:", error);
       return null;
     }
   }
 
   async enhancedAnalyzeUserInput(input) {
     try {
-      const geminiAnalysis = await this.analyzeWithGemini(input);
+      const openRouterAnalysis = await this.analyzeWithOpenRouter(input);
       const basicAnalysis = await this.analyzeUserInput(input);
 
-      if (geminiAnalysis) {
+      if (openRouterAnalysis) {
         return {
           ...basicAnalysis,
-          geminiGenres: geminiAnalysis.genres || [],
-          geminiCountries: geminiAnalysis.countries || [],
-          geminiTimeperiod: geminiAnalysis.timeperiod || null,
-          geminiEmotions: geminiAnalysis.emotions || [],
-          geminiKeywords: geminiAnalysis.keywords || [],
-          geminiRating: geminiAnalysis.rating || null,
-          geminiLanguage: geminiAnalysis.language || null,
+          aiGenres: openRouterAnalysis.genres || [],
+          aiCountries: openRouterAnalysis.countries || [],
+          aiTimeperiod: openRouterAnalysis.timeperiod || null,
+          aiEmotions: openRouterAnalysis.emotions || [],
+          aiKeywords: openRouterAnalysis.keywords || [],
+          aiRating: openRouterAnalysis.rating || null,
+          aiLanguage: openRouterAnalysis.language || null,
         };
       }
 
@@ -285,9 +307,9 @@ class AIMovieBot {
 
 
       const allGenres = [...analysis.genres];
-      if (analysis.geminiGenres) {
-        const geminiGenreIds = this.mapGenreNamesToIds(analysis.geminiGenres);
-        allGenres.push(...geminiGenreIds);
+      if (analysis.aiGenres) {
+        const aiGenreIds = this.mapGenreNamesToIds(analysis.aiGenres);
+        allGenres.push(...aiGenreIds);
       }
       if (analysis.moods.length > 0) {
         const moodGenres = analysis.moods.flatMap(
@@ -302,11 +324,11 @@ class AIMovieBot {
       }
 
       const allCountries = [...analysis.countries];
-      if (analysis.geminiCountries) {
-        const geminiCountryCodes = this.mapCountryNamesToCodes(
-          analysis.geminiCountries
+      if (analysis.aiCountries) {
+        const aiCountryCodes = this.mapCountryNamesToCodes(
+          analysis.aiCountries
         );
-        allCountries.push(...geminiCountryCodes);
+        allCountries.push(...aiCountryCodes);
       }
 
       if (allCountries.length > 0) {
@@ -314,11 +336,11 @@ class AIMovieBot {
         params.append("with_origin_country", uniqueCountries.join(","));
       }
 
-      if (analysis.geminiLanguage) {
-        params.append("with_original_language", analysis.geminiLanguage);
+      if (analysis.aiLanguage) {
+        params.append("with_original_language", analysis.aiLanguage);
       }
 
-      const timePeriod = analysis.timePeriod || analysis.geminiTimeperiod;
+      const timePeriod = analysis.timePeriod || analysis.aiTimeperiod;
       if (timePeriod) {
         if (timePeriod.from) {
           params.append("primary_release_date.gte", `${timePeriod.from}-01-01`);
@@ -328,7 +350,7 @@ class AIMovieBot {
         }
       }
 
-      const minRating = analysis.rating?.min || analysis.geminiRating;
+      const minRating = analysis.rating?.min || analysis.aiRating;
       if (minRating) {
         params.append("vote_average.gte", minRating.toString());
       }
@@ -370,7 +392,7 @@ class AIMovieBot {
     return [...new Set(genres)];
   }
 
-  extractMoods(input, geminiAnalysis) {
+  extractMoods(input, aiAnalysis) {
     const moods = [];
     const lowerInput = input.toLowerCase();
 
@@ -378,10 +400,10 @@ class AIMovieBot {
       if (lowerInput.includes(mood)) moods.push(mood);
     });
 
-    if (geminiAnalysis?.emotions) {
-      const emotions = Array.isArray(geminiAnalysis.emotions)
-        ? geminiAnalysis.emotions
-        : [geminiAnalysis.emotions];
+    if (aiAnalysis?.emotions) {
+      const emotions = Array.isArray(aiAnalysis.emotions)
+        ? aiAnalysis.emotions
+        : [aiAnalysis.emotions];
 
       const emotionToMood = {
         joy: "happy",
@@ -546,9 +568,9 @@ class AIMovieBot {
     }
 
     const allGenres = [...analysis.genres];
-    if (analysis.geminiGenres) {
-      const geminiGenreIds = this.mapGenreNamesToIds(analysis.geminiGenres);
-      allGenres.push(...geminiGenreIds);
+    if (analysis.aiGenres) {
+      const aiGenreIds = this.mapGenreNamesToIds(analysis.aiGenres);
+      allGenres.push(...aiGenreIds);
     }
 
     if (allGenres.length > 0) {
@@ -560,11 +582,11 @@ class AIMovieBot {
     }
 
     const allCountries = [...analysis.countries];
-    if (analysis.geminiCountries) {
-      const geminiCountryCodes = this.mapCountryNamesToCodes(
-        analysis.geminiCountries
+    if (analysis.aiCountries) {
+      const aiCountryCodes = this.mapCountryNamesToCodes(
+        analysis.aiCountries
       );
-      allCountries.push(...geminiCountryCodes);
+      allCountries.push(...aiCountryCodes);
     }
 
     if (allCountries.length > 0) {
@@ -602,9 +624,9 @@ class AIMovieBot {
     const explanations = [];
 
     const allGenres = [...analysis.genres];
-    if (analysis.geminiGenres) {
+    if (analysis.aiGenres) {
       allGenres.push(
-        ...analysis.geminiGenres.map(
+        ...analysis.aiGenres.map(
           (name) => name.charAt(0).toUpperCase() + name.slice(1)
         )
       );
@@ -613,17 +635,17 @@ class AIMovieBot {
       explanations.push(`${allGenres.join(", ")} movies`);
     }
 
-    
+
     const allCountries = [...analysis.countries];
-    if (analysis.geminiCountries) {
-      allCountries.push(...analysis.geminiCountries);
+    if (analysis.aiCountries) {
+      allCountries.push(...analysis.aiCountries);
     }
     if (allCountries.length > 0) {
       explanations.push(`from ${allCountries.join(", ")}`);
     }
 
 
-    const timePeriod = analysis.timePeriod || analysis.geminiTimeperiod;
+    const timePeriod = analysis.timePeriod || analysis.aiTimeperiod;
     if (timePeriod) {
       if (timePeriod.from === timePeriod.to) {
         explanations.push(`from ${timePeriod.from}`);
@@ -633,8 +655,8 @@ class AIMovieBot {
     }
 
     const allEmotions = [...analysis.moods];
-    if (analysis.geminiEmotions) {
-      allEmotions.push(...analysis.geminiEmotions);
+    if (analysis.aiEmotions) {
+      allEmotions.push(...analysis.aiEmotions);
     }
     if (allEmotions.length > 0) {
       explanations.push(`matching ${allEmotions.join(", ")} mood`);

@@ -1,9 +1,10 @@
-import { GEMINI_API_KEY, GEMINI_API_URL } from "../config/api.js";
+import { OPENROUTER_API_KEY, OPENROUTER_API_URL, OPENROUTER_MODEL } from "../config/api.js";
 
 class AIService {
   constructor() {
-    this.apiKey = GEMINI_API_KEY;
-    this.apiUrl = GEMINI_API_URL;
+    this.apiKey = OPENROUTER_API_KEY;
+    this.apiUrl = OPENROUTER_API_URL;
+    this.model = OPENROUTER_MODEL;
   }
 
   async getMovieRecommendations(userPreferences, movieList) {
@@ -48,7 +49,7 @@ class AIService {
 
       return recommendations;
     } catch (error) {
-      console.error("Gemini AI recommendation error:", error);
+      console.error("OpenRouter AI recommendation error:", error);
       return movieList.slice(0, 10);
     }
   }
