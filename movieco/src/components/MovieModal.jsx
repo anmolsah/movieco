@@ -62,7 +62,7 @@ const MovieModal = ({ movie, onClose }) => {
             onClick={onClose}
             className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors duration-200"
           >
-            <X className="w-6 h-6" />
+            <X className="w-6 h-6 cursor-pointer" />
           </button>
         </div>
 
@@ -248,7 +248,7 @@ const MovieModal = ({ movie, onClose }) => {
                         );
                       }
                     }}
-                    className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition-colors duration-200"
+                    className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition-colors duration-200 cursor-pointer"
                   >
                     <Play className="w-5 h-5" />
                     Watch Trailer
