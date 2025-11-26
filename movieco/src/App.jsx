@@ -21,7 +21,6 @@ import AuthModal from "./components/AuthModal.jsx";
 import ProfileModal from "./components/ProfileModal.jsx";
 import AIMovieBot from "./components/AIMovieBot.jsx";
 
-
 // Custom Hooks
 import { useAuth } from "./hooks/useAuth.js";
 import { useMovies } from "./hooks/useMovies.js";
@@ -42,7 +41,6 @@ function App() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showAIBot, setShowAIBot] = useState(false);
-
 
   // Custom Hooks
   const { user, isAuthenticated, checkAuthForWatchlist } = useAuth();
@@ -130,7 +128,7 @@ function App() {
             onMovieClick={setSelectedMovie}
           />
 
-          <div className="container mx-auto px-6 max-w-7xl">
+          <div className="container mx-auto px-3 sm:px-6 max-w-7xl">
             {/* AI Bot CTA */}/
             <div className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-sm border border-purple-500/30 rounded-2xl p-6 mb-12">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
@@ -229,7 +227,7 @@ function App() {
 
     if (showSearch) {
       return (
-        <div className="container mx-auto px-6 max-w-7xl py-8">
+        <div className="container mx-auto px-3 sm:px-6 max-w-7xl py-8">
           <SearchBar
             onSearch={handleSearch}
             onFilter={handleFilter}
@@ -253,7 +251,7 @@ function App() {
     // TV Shows tab
     if (activeTab === "tv-shows") {
       return (
-        <div className="container mx-auto px-6 max-w-7xl py-8 space-y-12">
+        <div className="container mx-auto px-3 sm:px-6 max-w-7xl py-8 space-y-12">
           <TVSection
             title="Popular TV Shows"
             tvShows={popularTVShows}
@@ -304,7 +302,7 @@ function App() {
     // Show auth prompt for watchlist if not authenticated
     if (activeTab === "watchlist" && !isAuthenticated) {
       return (
-        <div className="container mx-auto px-6 max-w-7xl py-16">
+        <div className="container mx-auto px-3 sm:px-6 max-w-7xl py-16">
           <div className="text-center">
             <div className="flex items-center justify-center">
               <h1 class="text-6xl font-bold bg-gradient-to-r from-cyan-400 to-blue-600 text-transparent bg-clip-text text-center py-6 bg-black">
@@ -347,7 +345,7 @@ function App() {
     const IconComponent = iconMap[icon];
 
     return (
-      <div className="container mx-auto px-6 max-w-7xl py-8">
+      <div className="container mx-auto px-3 sm:px-6 max-w-7xl py-8">
         <MovieSection
           title={title}
           movies={movies}
@@ -368,7 +366,6 @@ function App() {
         activeTab={activeTab}
         onTabChange={handleTabChange}
         watchlistCount={watchlist.length}
-
         onOpenSearch={() => {
           if (isAuthenticated) {
             setShowSearch(true);
