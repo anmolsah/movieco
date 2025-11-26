@@ -92,9 +92,11 @@ const ProfileModal = ({
   };
 
   const handlePreferenceChange = async (key, value) => {
+    console.log("ProfileModal: Preference change:", key, value);
     const updatedPrefs = { ...preferences, [key]: value };
     setPreferences(updatedPrefs);
     await AuthService.updateUserPreferences(updatedPrefs);
+    console.log("ProfileModal: Updated preferences:", updatedPrefs);
   };
 
   const handleSignOut = async () => {

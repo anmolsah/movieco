@@ -224,6 +224,7 @@ class AuthService {
         `userPreferences_${userId}`,
         JSON.stringify(preferences)
       );
+      // Notify listeners about preference changes
       this.notifyListeners();
       return preferences;
     } catch (error) {

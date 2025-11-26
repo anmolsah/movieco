@@ -6,7 +6,10 @@ class MovieService {
     try {
       const userPreferences = AuthService.getUserPreferences();
       const includeAdult = userPreferences.adultContent || false;
-      
+
+      console.log('MovieService: Adult content setting:', includeAdult);
+      console.log('MovieService: Full preferences:', userPreferences);
+
       const response = await fetch(
         `${endpoint}?api_key=${TMDB_API_KEY}&page=${page}&include_adult=${includeAdult}`
       );
@@ -22,7 +25,9 @@ class MovieService {
     try {
       const userPreferences = AuthService.getUserPreferences();
       const includeAdult = userPreferences.adultContent || false;
-      
+
+      console.log('MovieService Search: Adult content setting:', includeAdult);
+
       const response = await fetch(
         `${API_ENDPOINTS.search
         }?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(
