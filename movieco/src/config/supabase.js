@@ -183,10 +183,8 @@ export const supabase =
     : createMockSupabaseClient();
 
 if (supabaseUrl && supabaseAnonKey) {
-  console.log("✅ Using real Supabase configuration");
+  // Using real Supabase configuration
 } else {
-  console.log("⚠️ Using mock Supabase client for demo purposes");
-  console.log(
-    "To use real Supabase, add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your .env file"
-  );
+  // Using mock Supabase client for demo purposes
+  // To use real Supabase, add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your .env file
 }

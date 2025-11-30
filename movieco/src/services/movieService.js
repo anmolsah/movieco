@@ -7,16 +7,12 @@ class MovieService {
       const userPreferences = AuthService.getUserPreferences();
       const includeAdult = userPreferences.adultContent || false;
 
-      console.log('MovieService: Adult content setting:', includeAdult);
-      console.log('MovieService: Full preferences:', userPreferences);
-
       const response = await fetch(
         `${endpoint}?api_key=${TMDB_API_KEY}&page=${page}&include_adult=${includeAdult}`
       );
       if (!response.ok) throw new Error("Failed to fetch movies");
       return await response.json();
     } catch (error) {
-      console.error("Movie fetch error:", error);
       return { results: [], total_pages: 0 };
     }
   }
@@ -25,8 +21,6 @@ class MovieService {
     try {
       const userPreferences = AuthService.getUserPreferences();
       const includeAdult = userPreferences.adultContent || false;
-
-      console.log('MovieService Search: Adult content setting:', includeAdult);
 
       const response = await fetch(
         `${API_ENDPOINTS.search
@@ -37,7 +31,6 @@ class MovieService {
       if (!response.ok) throw new Error("Failed to search movies");
       return await response.json();
     } catch (error) {
-      console.error("Movie search error:", error);
       return { results: [], total_pages: 0 };
     }
   }
@@ -50,7 +43,6 @@ class MovieService {
       if (!response.ok) throw new Error("Failed to fetch movie details");
       return await response.json();
     } catch (error) {
-      console.error("Movie details error:", error);
       return null;
     }
   }
@@ -63,7 +55,6 @@ class MovieService {
       if (!response.ok) throw new Error("Failed to fetch TV show details");
       return await response.json();
     } catch (error) {
-      console.error("TV show details error:", error);
       return null;
     }
   }
@@ -77,7 +68,6 @@ class MovieService {
       const data = await response.json();
       return data.genres;
     } catch (error) {
-      console.error("Genres fetch error:", error);
       return [];
     }
   }
@@ -108,7 +98,6 @@ class MovieService {
       const data = await response.json();
       return data.results[region] || null;
     } catch (error) {
-      console.error("Watch providers fetch error:", error);
       return null;
     }
   }
@@ -134,7 +123,6 @@ class MovieService {
         results: [...moviesWithProviders, ...remainingMovies]
       };
     } catch (error) {
-      console.error("Movies with providers fetch error:", error);
       return { results: [], total_pages: 0 };
     }
   }
@@ -160,7 +148,6 @@ class MovieService {
         results: [...tvWithProviders, ...remainingTVShows]
       };
     } catch (error) {
-      console.error("TV shows with providers fetch error:", error);
       return { results: [], total_pages: 0 };
     }
   }

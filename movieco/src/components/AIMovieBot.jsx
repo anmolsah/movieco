@@ -56,28 +56,23 @@ const AIMovieBotComponent = ({
     setIsLoading(true);
 
     try {
-     
       const analysis = await AIMovieBot.enhancedAnalyzeUserInput(input.trim());
 
-      
       const results = await AIMovieBot.findMovies(analysis, moviePool);
 
-      
       const explanation = AIMovieBot.generateExplanation(analysis, results);
 
       const botMessage = {
         id: Date.now() + 1,
         type: "bot",
         content: explanation,
-        movies: results.movies.slice(0, 8), 
+        movies: results.movies.slice(0, 8),
         analysis: analysis,
         timestamp: new Date(),
       };
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      console.error("Bot error:", error);
-
       const errorMessage = {
         id: Date.now() + 1,
         type: "bot",

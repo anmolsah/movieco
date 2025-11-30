@@ -49,7 +49,6 @@ class AIService {
 
       return recommendations;
     } catch (error) {
-      console.error("OpenRouter AI recommendation error:", error);
       return movieList.slice(0, 10);
     }
   }

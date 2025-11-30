@@ -85,18 +85,16 @@ const ProfileModal = ({
       setUser({ ...user, ...editData });
       setEditMode(false);
     } catch (error) {
-      console.error("Failed to update profile:", error);
+      // Failed to update profile
     } finally {
       setLoading(false);
     }
   };
 
   const handlePreferenceChange = async (key, value) => {
-    console.log("ProfileModal: Preference change:", key, value);
     const updatedPrefs = { ...preferences, [key]: value };
     setPreferences(updatedPrefs);
     await AuthService.updateUserPreferences(updatedPrefs);
-    console.log("ProfileModal: Updated preferences:", updatedPrefs);
   };
 
   const handleSignOut = async () => {
@@ -116,7 +114,7 @@ const ProfileModal = ({
           onWatchlistUpdate();
         }
       } catch (error) {
-        console.error("Failed to clear watchlist:", error);
+        // Failed to clear watchlist
       }
     }
   };

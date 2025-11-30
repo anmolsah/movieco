@@ -32,7 +32,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    setError(""); 
+    setError("");
   };
 
   const validateForm = () => {
@@ -102,13 +102,11 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
       if (result.error) {
         setError(result.error);
       } else if (result.user || mode === "forgot") {
-        
         onSuccess();
         onClose();
       }
     } catch (error) {
       setError("An unexpected error occurred. Please try again.");
-      console.error("Auth error:", error);
     } finally {
       setLoading(false);
     }
@@ -309,7 +307,6 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
                   Sign up
                 </button>
               </p>
-              
             </>
           )}
 

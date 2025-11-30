@@ -36,7 +36,6 @@ export const useWatchlist = (user, isAuthenticated) => {
         }
       }
     } catch (error) {
-      console.error("Failed to load watchlist:", error);
       setError("Failed to load watchlist");
 
       // Fallback to localStorage
@@ -75,7 +74,6 @@ export const useWatchlist = (user, isAuthenticated) => {
 
       return true;
     } catch (error) {
-      console.error("Watchlist operation failed:", error);
       setError(error.message || "Failed to update watchlist");
 
       let newWatchlist;
@@ -101,7 +99,6 @@ export const useWatchlist = (user, isAuthenticated) => {
       setWatchlist([]);
       return true;
     } catch (error) {
-      console.error("Failed to clear watchlist:", error);
       setError("Failed to clear watchlist");
       return false;
     }

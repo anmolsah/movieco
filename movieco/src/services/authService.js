@@ -41,7 +41,7 @@ class AuthService {
       this.authSubscription = subscription;
       this.notifyListeners();
     } catch (error) {
-      console.error("Auth initialization error:", error);
+      // Auth initialization error
     }
   }
 
@@ -82,7 +82,6 @@ class AuthService {
         error: null,
       };
     } catch (error) {
-      console.error("Sign up error:", error);
       return { user: null, error: error.message };
     }
   }
@@ -101,7 +100,6 @@ class AuthService {
         error: null,
       };
     } catch (error) {
-      console.error("Sign in error:", error);
       return { user: null, error: error.message };
     }
   }
@@ -119,7 +117,6 @@ class AuthService {
 
       return { user: null, error: null }; // OAuth redirects, so no immediate user
     } catch (error) {
-      console.error("Google sign in error:", error);
       return { user: null, error: error.message };
     }
   }
@@ -134,7 +131,6 @@ class AuthService {
       this.isAuthenticated = false;
       this.notifyListeners();
     } catch (error) {
-      console.error("Sign out error:", error);
       throw error;
     }
   }
@@ -149,7 +145,6 @@ class AuthService {
 
       return { error: null };
     } catch (error) {
-      console.error("Password reset error:", error);
       return { error: error.message };
     }
   }
@@ -176,7 +171,6 @@ class AuthService {
 
       return { user: this.user, error: null };
     } catch (error) {
-      console.error("Profile update error:", error);
       return { user: null, error: error.message };
     }
   }
@@ -228,7 +222,6 @@ class AuthService {
       this.notifyListeners();
       return preferences;
     } catch (error) {
-      console.error("Preferences update error:", error);
       throw error;
     }
   }
@@ -250,7 +243,7 @@ class AuthService {
       try {
         callback(this.user, this.isAuthenticated);
       } catch (error) {
-        console.error("Auth listener error:", error);
+        // Auth listener error
       }
     });
   }

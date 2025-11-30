@@ -16,7 +16,6 @@ export const useSearch = (updateLoadingState) => {
       const results = await MovieService.searchMovies(query);
       setSearchResults(results.results || []);
     } catch (error) {
-      console.error("Search failed:", error);
       setSearchResults([]);
     }
 
@@ -24,7 +23,6 @@ export const useSearch = (updateLoadingState) => {
   };
 
   const handleFilter = (filters) => {
-    console.log("Applying filters:", filters);
     // Filter logic will be implemented here
   };
 

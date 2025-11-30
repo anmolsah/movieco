@@ -9,7 +9,6 @@ class WatchlistService {
   async getUserWatchlist(userId) {
     try {
       if (!userId) {
-        console.warn("No user ID provided for watchlist fetch");
         return [];
       }
 
@@ -20,7 +19,6 @@ class WatchlistService {
         .order("added_at", { ascending: false });
 
       if (error) {
-        console.error("Error fetching watchlist:", error);
         return [];
       }
 
@@ -31,7 +29,6 @@ class WatchlistService {
         added_at: item.added_at,
       }));
     } catch (error) {
-      console.error("Watchlist fetch error:", error);
       return [];
     }
   }
@@ -67,7 +64,6 @@ class WatchlistService {
         added_at: data.added_at,
       };
     } catch (error) {
-      console.error("Error adding to watchlist:", error);
       throw error;
     }
   }
@@ -91,7 +87,6 @@ class WatchlistService {
 
       return true;
     } catch (error) {
-      console.error("Error removing from watchlist:", error);
       throw error;
     }
   }
@@ -109,13 +104,11 @@ class WatchlistService {
         .single();
 
       if (error && error.code !== "PGRST116") {
-        console.error("Error checking watchlist:", error);
         return false;
       }
 
       return !!data;
     } catch (error) {
-      console.error("Watchlist check error:", error);
       return false;
     }
   }
@@ -131,13 +124,11 @@ class WatchlistService {
         .eq("user_id", userId);
 
       if (error) {
-        console.error("Error getting watchlist count:", error);
         return 0;
       }
 
       return count || 0;
     } catch (error) {
-      console.error("Watchlist count error:", error);
       return 0;
     }
   }
@@ -160,7 +151,6 @@ class WatchlistService {
 
       return true;
     } catch (error) {
-      console.error("Error clearing watchlist:", error);
       throw error;
     }
   }
@@ -178,7 +168,6 @@ class WatchlistService {
         .limit(limit);
 
       if (error) {
-        console.error("Error fetching recently added:", error);
         return [];
       }
 
@@ -188,7 +177,6 @@ class WatchlistService {
         added_at: item.added_at,
       }));
     } catch (error) {
-      console.error("Recently added fetch error:", error);
       return [];
     }
   }
@@ -212,12 +200,10 @@ class WatchlistService {
         });
 
       if (error) {
-        console.error("Error syncing local watchlist:", error);
-      } else {
-        console.log("Local watchlist synced successfully");
+        // Error syncing local watchlist
       }
     } catch (error) {
-      console.error("Watchlist sync error:", error);
+      // Watchlist sync error
     }
   }
 }

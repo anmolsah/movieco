@@ -6,12 +6,11 @@ class TVService {
     try {
       const userPreferences = AuthService.getUserPreferences();
       const includeAdult = userPreferences.adultContent || false;
-      
+
       const response = await fetch(`${endpoint}?api_key=${TMDB_API_KEY}&page=${page}&include_adult=${includeAdult}`);
       if (!response.ok) throw new Error('Failed to fetch TV shows');
       return await response.json();
     } catch (error) {
-      console.error('TV shows fetch error:', error);
       return { results: [], total_pages: 0 };
     }
   }
@@ -20,14 +19,13 @@ class TVService {
     try {
       const userPreferences = AuthService.getUserPreferences();
       const includeAdult = userPreferences.adultContent || false;
-      
+
       const response = await fetch(
         `${API_ENDPOINTS.searchTv}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&page=${page}&include_adult=${includeAdult}`
       );
       if (!response.ok) throw new Error('Failed to search TV shows');
       return await response.json();
     } catch (error) {
-      console.error('TV search error:', error);
       return { results: [], total_pages: 0 };
     }
   }
@@ -40,7 +38,6 @@ class TVService {
       if (!response.ok) throw new Error('Failed to fetch TV details');
       return await response.json();
     } catch (error) {
-      console.error('TV details error:', error);
       return null;
     }
   }
@@ -52,7 +49,6 @@ class TVService {
       const data = await response.json();
       return data.genres;
     } catch (error) {
-      console.error('TV genres fetch error:', error);
       return [];
     }
   }
@@ -82,7 +78,6 @@ class TVService {
       const data = await response.json();
       return data.results[region] || null;
     } catch (error) {
-      console.error("TV watch providers fetch error:", error);
       return null;
     }
   }
@@ -108,7 +103,6 @@ class TVService {
         results: [...tvWithProviders, ...remainingTVShows]
       };
     } catch (error) {
-      console.error("TV shows with providers fetch error:", error);
       return { results: [], total_pages: 0 };
     }
   }

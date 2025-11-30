@@ -77,7 +77,6 @@ export const useMovies = (region = 'US') => {
           ai: false,
         });
       } catch (error) {
-        console.error("Failed to load initial data:", error);
         setLoading({
           nowPlaying: false,
           upcoming: false,
@@ -99,7 +98,6 @@ export const useMovies = (region = 'US') => {
 
       // Check if adult content preference changed
       if (userPreferences && newPrefs.adultContent !== userPreferences.adultContent) {
-        console.log('Adult content preference changed, refreshing movies...');
 
         // Set loading states
         setLoading({
@@ -155,7 +153,6 @@ export const useMovies = (region = 'US') => {
               ai: false,
             });
           } catch (error) {
-            console.error("Failed to refresh movie data:", error);
             setLoading({
               nowPlaying: false,
               upcoming: false,

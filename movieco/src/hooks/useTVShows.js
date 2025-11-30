@@ -74,7 +74,6 @@ export const useTVShows = (region = 'US') => {
         });
 
       } catch (error) {
-        console.error('Failed to load TV data:', error);
         setLoading({
           popular: false,
           topRated: false,
@@ -95,7 +94,6 @@ export const useTVShows = (region = 'US') => {
 
       // Check if adult content preference changed
       if (userPreferences && newPrefs.adultContent !== userPreferences.adultContent) {
-        console.log('Adult content preference changed, refreshing TV shows...');
 
         // Set loading states
         setLoading({
@@ -147,7 +145,6 @@ export const useTVShows = (region = 'US') => {
               search: false
             });
           } catch (error) {
-            console.error("Failed to refresh TV data:", error);
             setLoading({
               popular: false,
               topRated: false,

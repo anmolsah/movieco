@@ -43,7 +43,6 @@ export const useAIRecommendations = (
       );
       setAiRecommendations(recommendations);
     } catch (error) {
-      console.error("Failed to generate AI recommendations:", error);
       setAiRecommendations(
         moviePool.sort((a, b) => b.vote_average - a.vote_average).slice(0, 10)
       );

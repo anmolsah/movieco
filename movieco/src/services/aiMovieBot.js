@@ -131,7 +131,6 @@ class AIMovieBot {
 
       return analysis;
     } catch (error) {
-      console.error("Error analyzing user input:", error);
       return this.fallbackAnalysis(input);
     }
   }
@@ -205,14 +204,12 @@ Return only valid JSON without any additional text.`;
           // If no JSON brackets found, try parsing the whole response
           return JSON.parse(generatedText.trim());
         } catch (parseError) {
-          console.warn("Failed to parse OpenRouter JSON response:", parseError);
-          console.log("Raw response:", generatedText);
+          // Failed to parse OpenRouter JSON response
         }
       }
 
       return null;
     } catch (error) {
-      console.error("OpenRouter analysis error:", error);
       return null;
     }
   }
@@ -237,7 +234,6 @@ Return only valid JSON without any additional text.`;
 
       return basicAnalysis;
     } catch (error) {
-      console.error("Enhanced analysis error:", error);
       return await this.analyzeUserInput(input);
     }
   }
@@ -364,7 +360,6 @@ Return only valid JSON without any additional text.`;
       params.append("page", "1");
 
       const finalUrl = `${url}&${params.toString()}`;
-      console.log("TMDB API URL:", finalUrl);
 
       const response = await fetch(finalUrl);
       if (!response.ok) {
@@ -372,11 +367,9 @@ Return only valid JSON without any additional text.`;
       }
 
       const data = await response.json();
-      console.log("TMDB API Response:", data);
 
       return data.results || [];
     } catch (error) {
-      console.error("TMDB fetch error:", error);
       return [];
     }
   }
@@ -515,15 +508,11 @@ Return only valid JSON without any additional text.`;
 
   async findMovies(analysis, moviePool = []) {
     try {
-      console.log("Finding movies with analysis:", analysis);
-
       const enhancedAnalysis = await this.enhancedAnalyzeUserInput(
         analysis.originalInput
       );
-      console.log("Enhanced analysis:", enhancedAnalysis);
 
       const tmdbMovies = await this.fetchMoviesFromTMDB(enhancedAnalysis);
-      console.log("TMDB movies found:", tmdbMovies.length);
 
       if (tmdbMovies.length > 0) {
         return {
@@ -533,7 +522,6 @@ Return only valid JSON without any additional text.`;
           source: "TMDB API",
         };
       } else {
-        console.log("No TMDB results, falling back to moviePool filtering");
         const filteredMovies = this.filterMoviePool(
           enhancedAnalysis,
           moviePool
@@ -547,8 +535,6 @@ Return only valid JSON without any additional text.`;
         };
       }
     } catch (error) {
-      console.error("Error in findMovies:", error);
-
       return {
         movies: moviePool.slice(0, 10),
         analysis,
