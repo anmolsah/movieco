@@ -34,3 +34,29 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Hide scrollbar while maintaining functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* AI Bot mobile optimizations */
+@media (max-width: 640px) {
+  .ai-bot-mobile {
+    height: 100vh;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .ai-bot-messages {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .ai-bot-input {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+}
