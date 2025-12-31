@@ -55,7 +55,7 @@ const Footer = () => {
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-400">
           <div className="flex items-center gap-4">
-            <span>&copy; 2025 Movieco. All rights reserved.</span>
+            <span>&copy; 2026 Movieco. All rights reserved.</span>
           </div>
 
           <div className="flex items-center gap-6">
