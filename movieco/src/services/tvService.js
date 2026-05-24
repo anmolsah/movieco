@@ -13,7 +13,7 @@ class TVService {
       const response = await fetch(`${endpoint}?api_key=${TMDB_API_KEY}&page=${page}&include_adult=${includeAdult}`);
       if (!response.ok) throw new Error('Failed to fetch TV shows');
       return await response.json();
-    } catch (error) {
+    } catch {
       return { results: [], total_pages: 0 };
     }
   }
@@ -28,7 +28,7 @@ class TVService {
       );
       if (!response.ok) throw new Error('Failed to search TV shows');
       return await response.json();
-    } catch (error) {
+    } catch {
       return { results: [], total_pages: 0 };
     }
   }
@@ -40,7 +40,7 @@ class TVService {
       );
       if (!response.ok) throw new Error('Failed to fetch TV details');
       return await response.json();
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -51,7 +51,7 @@ class TVService {
       if (!response.ok) throw new Error('Failed to fetch TV genres');
       const data = await response.json();
       return data.genres;
-    } catch (error) {
+    } catch {
       return [];
     }
   }
@@ -87,12 +87,12 @@ class TVService {
       const result = data.results[region] || null;
       this.providersCache[cacheKey] = result;
       return result;
-    } catch (error) {
+    } catch {
       return null;
     }
   }
 
-  async getTVShowsWithProviders(endpoint, page = 1, region = 'US') {
+  async getTVShowsWithProviders(endpoint, page = 1, _region = 'US') {
     try {
       const tvData = await this.fetchTVShows(endpoint, page);
       if (!tvData.results) return tvData;
@@ -107,7 +107,7 @@ class TVService {
         ...tvData,
         results: tvWithProviders
       };
-    } catch (error) {
+    } catch {
       return { results: [], total_pages: 0 };
     }
   }

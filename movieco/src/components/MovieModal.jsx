@@ -21,7 +21,7 @@ const MovieModal = ({ movie, onClose }) => {
     };
 
     fetchMovieDetails();
-  }, [movie?.id]);
+  }, [movie]);
 
   if (!movie) return null;
 

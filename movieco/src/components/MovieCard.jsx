@@ -22,7 +22,7 @@ const MovieCard = ({
     try {
       const data = await MovieService.getWatchProviders(movie.id, 'movie', 'US');
       setProviders(data);
-    } catch (e) {
+    } catch {
       // ignore
     } finally {
       setLoadingProviders(false);

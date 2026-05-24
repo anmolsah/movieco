@@ -22,7 +22,7 @@ const TVCard = ({
     try {
       const data = await TVService.getWatchProviders(tvShow.id, 'US');
       setProviders(data);
-    } catch (e) {
+    } catch {
       // ignore
     } finally {
       setLoadingProviders(false);

@@ -15,7 +15,7 @@ class MovieService {
       );
       if (!response.ok) throw new Error("Failed to fetch movies");
       return await response.json();
-    } catch (error) {
+    } catch {
       return { results: [], total_pages: 0 };
     }
   }
@@ -33,7 +33,7 @@ class MovieService {
       );
       if (!response.ok) throw new Error("Failed to search movies");
       return await response.json();
-    } catch (error) {
+    } catch {
       return { results: [], total_pages: 0 };
     }
   }
@@ -45,7 +45,7 @@ class MovieService {
       );
       if (!response.ok) throw new Error("Failed to fetch movie details");
       return await response.json();
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -57,7 +57,7 @@ class MovieService {
       );
       if (!response.ok) throw new Error("Failed to fetch TV show details");
       return await response.json();
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -70,7 +70,7 @@ class MovieService {
       if (!response.ok) throw new Error("Failed to fetch genres");
       const data = await response.json();
       return data.genres;
-    } catch (error) {
+    } catch {
       return [];
     }
   }
@@ -107,12 +107,12 @@ class MovieService {
       const result = data.results[region] || null;
       this.providersCache[cacheKey] = result;
       return result;
-    } catch (error) {
+    } catch {
       return null;
     }
   }
 
-  async getMoviesWithProviders(endpoint, page = 1, region = 'US') {
+  async getMoviesWithProviders(endpoint, page = 1, _region = 'US') {
     try {
       const moviesData = await this.fetchMovies(endpoint, page);
       if (!moviesData.results) return moviesData;
@@ -127,12 +127,12 @@ class MovieService {
         ...moviesData,
         results: moviesWithProviders
       };
-    } catch (error) {
+    } catch {
       return { results: [], total_pages: 0 };
     }
   }
 
-  async getTVShowsWithProviders(endpoint, page = 1, region = 'US') {
+  async getTVShowsWithProviders(endpoint, page = 1, _region = 'US') {
     try {
       const tvData = await this.fetchMovies(endpoint, page);
       if (!tvData.results) return tvData;
@@ -152,7 +152,7 @@ class MovieService {
         ...tvData,
         results: [...tvWithProviders, ...remainingTVShows]
       };
-    } catch (error) {
+    } catch {
       return { results: [], total_pages: 0 };
     }
   }
