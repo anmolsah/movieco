@@ -72,7 +72,7 @@ const MovieModal = ({ movie, onClose }) => {
             {/* Poster */}
             <div className="flex-shrink-0">
               <img
-                src={getImageUrl(movie.poster_path, "w342")}
+                src={getImageUrl(movie.poster_path, "w500")}
                 alt={movie.title || movie.name}
                 className="w-48 h-72 object-cover rounded-xl shadow-2xl mx-auto md:mx-0"
               />

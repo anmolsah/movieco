@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Star, Calendar, Clock, Eye, Heart } from "lucide-react";
 import { getImageUrl } from "../config/api.js";
 import StreamingPlatforms from "./StreamingPlatforms.jsx";
+import MovieService from "../services/movieService.js";
 
 const MovieCard = ({
   movie,
@@ -12,6 +13,21 @@ const MovieCard = ({
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [providers, setProviders] = useState(movie.watchProviders || null);
+  const [loadingProviders, setLoadingProviders] = useState(false);
+
+  const handleMouseEnter = async () => {
+    if (providers || loadingProviders) return;
+    setLoadingProviders(true);
+    try {
+      const data = await MovieService.getWatchProviders(movie.id, 'movie', 'US');
+      setProviders(data);
+    } catch (e) {
+      // ignore
+    } finally {
+      setLoadingProviders(false);
+    }
+  };
 
   const formatDate = (dateString) => {
     if (!dateString) return "TBA";
@@ -43,6 +59,7 @@ const MovieCard = ({
     <div
       className="group relative bg-slate-800/50 backdrop-blur-sm rounded-lg sm:rounded-xl overflow-hidden border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20 cursor-pointer"
       onClick={() => onMovieClick(movie)}
+      onMouseEnter={handleMouseEnter}
     >
       {/* Movie Poster */}
       <div className="relative aspect-[2/3] overflow-hidden">
@@ -165,7 +182,7 @@ const MovieCard = ({
             {movie.overview || "No description available."}
           </p>
 
-          <StreamingPlatforms watchProviders={movie.watchProviders} />
+          <StreamingPlatforms watchProviders={providers} />
 
           <div className="flex items-center justify-between mt-3">
             <div className="flex items-center gap-1 text-slate-400">
@@ -191,4 +208,4 @@ const MovieCard = ({
   );
 };
 
-export default MovieCard;
+export default React.memo(MovieCard);

@@ -27,7 +27,7 @@ export const API_ENDPOINTS = {
   tvWatchProviders: `${TMDB_BASE_URL}/tv`,
 };
 
-export const getImageUrl = (path, size = "w500") => {
+export const getImageUrl = (path, size = "w342") => {
   if (!path) return "/api/placeholder/300/450";
   return `${TMDB_IMAGE_BASE_URL}/${size}${path}`;
 };

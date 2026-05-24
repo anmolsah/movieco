@@ -2,6 +2,9 @@ import { TMDB_API_KEY, API_ENDPOINTS } from '../config/api.js';
 import AuthService from './authService.js';
 
 class TVService {
+  constructor() {
+    this.providersCache = {};
+  }
   async fetchTVShows(endpoint, page = 1) {
     try {
       const userPreferences = AuthService.getUserPreferences();
@@ -71,12 +74,19 @@ class TVService {
 
   async getWatchProviders(id, region = 'US') {
     try {
+      const cacheKey = `tv_${id}_${region}`;
+      if (this.providersCache[cacheKey]) {
+        return this.providersCache[cacheKey];
+      }
+
       const response = await fetch(
         `${API_ENDPOINTS.tvWatchProviders}/${id}/watch/providers?api_key=${TMDB_API_KEY}`
       );
       if (!response.ok) return null;
       const data = await response.json();
-      return data.results[region] || null;
+      const result = data.results[region] || null;
+      this.providersCache[cacheKey] = result;
+      return result;
     } catch (error) {
       return null;
     }
@@ -87,20 +97,15 @@ class TVService {
       const tvData = await this.fetchTVShows(endpoint, page);
       if (!tvData.results) return tvData;
 
-
-      const tvWithProviders = await Promise.all(
-        tvData.results.slice(0, 10).map(async (tvShow) => {
-          const providers = await this.getWatchProviders(tvShow.id, region);
-          return { ...tvShow, watchProviders: providers };
-        })
-      );
-
-
-      const remainingTVShows = tvData.results.slice(10).map(tvShow => ({ ...tvShow, watchProviders: null }));
+      // Lazy load watch providers on hover/modal
+      const tvWithProviders = tvData.results.map(tvShow => ({
+        ...tvShow,
+        watchProviders: null
+      }));
 
       return {
         ...tvData,
-        results: [...tvWithProviders, ...remainingTVShows]
+        results: tvWithProviders
       };
     } catch (error) {
       return { results: [], total_pages: 0 };

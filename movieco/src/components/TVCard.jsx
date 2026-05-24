@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Star, Calendar, Clock, Eye, Heart, Tv } from "lucide-react";
 import { getImageUrl } from "../config/api.js";
 import StreamingPlatforms from "./StreamingPlatforms.jsx";
+import TVService from "../services/tvService.js";
 
 const TVCard = ({
   tvShow,
@@ -12,6 +13,21 @@ const TVCard = ({
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [providers, setProviders] = useState(tvShow.watchProviders || null);
+  const [loadingProviders, setLoadingProviders] = useState(false);
+
+  const handleMouseEnter = async () => {
+    if (providers || loadingProviders) return;
+    setLoadingProviders(true);
+    try {
+      const data = await TVService.getWatchProviders(tvShow.id, 'US');
+      setProviders(data);
+    } catch (e) {
+      // ignore
+    } finally {
+      setLoadingProviders(false);
+    }
+  };
 
   const formatDate = (dateString) => {
     if (!dateString) return "TBA";
@@ -43,6 +59,7 @@ const TVCard = ({
     <div
       className="group relative bg-slate-800/50 backdrop-blur-sm rounded-lg sm:rounded-xl overflow-hidden border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20 cursor-pointer"
       onClick={() => onTVClick(tvShow)}
+      onMouseEnter={handleMouseEnter}
     >
       {/* TV Show Poster */}
       <div className="relative aspect-[2/3] overflow-hidden">
@@ -163,7 +180,7 @@ const TVCard = ({
             {tvShow.overview || "No description available."}
           </p>
 
-          <StreamingPlatforms watchProviders={tvShow.watchProviders} />
+          <StreamingPlatforms watchProviders={providers} />
 
           <div className="flex items-center justify-between mt-3">
             <div className="flex items-center gap-1 text-slate-400">
@@ -189,4 +206,4 @@ const TVCard = ({
   );
 };
 
-export default TVCard;
+export default React.memo(TVCard);

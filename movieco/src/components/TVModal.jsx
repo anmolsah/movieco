@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { X, Star, Calendar, Clock, Globe, Play, Users, Tv } from "lucide-react";
 import { getImageUrl } from "../config/api.js";
-import TVService from "../services/TVService.js";
+import TVService from "../services/tvService.js";
 
 const TVModal = ({ tvShow, onClose }) => {
   const [tvDetails, setTvDetails] = useState(null);
@@ -61,7 +61,7 @@ const TVModal = ({ tvShow, onClose }) => {
             {/* Poster */}
             <div className="flex-shrink-0">
               <img
-                src={getImageUrl(tvShow.poster_path, "w342")}
+                src={getImageUrl(tvShow.poster_path, "w500")}
                 alt={tvShow.name}
                 className="w-48 h-72 object-cover rounded-xl shadow-2xl mx-auto md:mx-0"
               />

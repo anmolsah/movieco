@@ -2,6 +2,9 @@ import { TMDB_API_KEY, API_ENDPOINTS } from "../config/api.js";
 import AuthService from "./authService.js";
 
 class MovieService {
+  constructor() {
+    this.providersCache = {};
+  }
   async fetchMovies(endpoint, page = 1) {
     try {
       const userPreferences = AuthService.getUserPreferences();
@@ -90,13 +93,20 @@ class MovieService {
 
   async getWatchProviders(id, mediaType = 'movie', region = 'US') {
     try {
+      const cacheKey = `${mediaType}_${id}_${region}`;
+      if (this.providersCache[cacheKey]) {
+        return this.providersCache[cacheKey];
+      }
+
       const endpoint = mediaType === 'tv' ? API_ENDPOINTS.tvWatchProviders : API_ENDPOINTS.movieWatchProviders;
       const response = await fetch(
         `${endpoint}/${id}/watch/providers?api_key=${TMDB_API_KEY}`
       );
       if (!response.ok) return null;
       const data = await response.json();
-      return data.results[region] || null;
+      const result = data.results[region] || null;
+      this.providersCache[cacheKey] = result;
+      return result;
     } catch (error) {
       return null;
     }
@@ -107,20 +117,15 @@ class MovieService {
       const moviesData = await this.fetchMovies(endpoint, page);
       if (!moviesData.results) return moviesData;
 
-
-      const moviesWithProviders = await Promise.all(
-        moviesData.results.slice(0, 10).map(async (movie) => {
-          const providers = await this.getWatchProviders(movie.id, 'movie', region);
-          return { ...movie, watchProviders: providers };
-        })
-      );
-
-
-      const remainingMovies = moviesData.results.slice(10).map(movie => ({ ...movie, watchProviders: null }));
+      // Lazy load watch providers on hover/modal
+      const moviesWithProviders = moviesData.results.map(movie => ({
+        ...movie,
+        watchProviders: null
+      }));
 
       return {
         ...moviesData,
-        results: [...moviesWithProviders, ...remainingMovies]
+        results: moviesWithProviders
       };
     } catch (error) {
       return { results: [], total_pages: 0 };
