@@ -14,6 +14,8 @@ import {
   Calendar,
   Award,
   Menu,
+  Copy,
+  Check,
 } from "lucide-react";
 import AuthService from "../services/authService.js";
 import { useUserStats } from "../hooks/useUserStats.js";
@@ -35,6 +37,7 @@ const ProfileModal = ({
   const [genres, setGenres] = useState([]);
   const [recentlyAdded, setRecentlyAdded] = useState([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const {
     userStats,
@@ -95,6 +98,10 @@ const ProfileModal = ({
     const updatedPrefs = { ...preferences, [key]: value };
     setPreferences(updatedPrefs);
     await AuthService.updateUserPreferences(updatedPrefs);
+
+    if (key === "privacy" && value.shareWatchlist !== undefined) {
+      await WatchlistService.setWatchlistShareStatus(user.id, user.name || "User", value.shareWatchlist);
+    }
   };
 
   const handleSignOut = async () => {
@@ -117,6 +124,15 @@ const ProfileModal = ({
         // Failed to clear watchlist
       }
     }
+  };
+
+  const handleCopyLink = () => {
+    const movieIds = (watchlist || []).map((m) => m.id).join(",");
+    const nameParam = encodeURIComponent(user.name || "User");
+    const link = `${window.location.origin}/watchlist/${user.id}?name=${nameParam}&movies=${movieIds}`;
+    navigator.clipboard.writeText(link);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const getGenreName = (genreId) => {
@@ -529,34 +545,54 @@ const ProfileModal = ({
         </select>
       </div>
 
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="text-slate-300 font-medium">Share Watchlist</div>
-          <div className="text-sm text-slate-400">
-            Allow others to see your watchlist
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-slate-300 font-medium">Share Watchlist</div>
+            <div className="text-sm text-slate-400">
+              Allow others to see your watchlist
+            </div>
           </div>
-        </div>
-        <button
-          onClick={() =>
-            handlePreferenceChange("privacy", {
-              ...preferences.privacy,
-              shareWatchlist: !preferences.privacy?.shareWatchlist,
-            })
-          }
-          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${
-            preferences.privacy?.shareWatchlist
-              ? "bg-purple-600"
-              : "bg-slate-600"
-          }`}
-        >
-          <span
-            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
+          <button
+            onClick={() =>
+              handlePreferenceChange("privacy", {
+                ...preferences.privacy,
+                shareWatchlist: !preferences.privacy?.shareWatchlist,
+              })
+            }
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${
               preferences.privacy?.shareWatchlist
-                ? "translate-x-6"
-                : "translate-x-1"
+                ? "bg-purple-600"
+                : "bg-slate-600"
             }`}
-          />
-        </button>
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
+                preferences.privacy?.shareWatchlist
+                  ? "translate-x-6"
+                  : "translate-x-1"
+              }`}
+            />
+          </button>
+        </div>
+
+        {preferences.privacy?.shareWatchlist && (
+          <div className="bg-slate-800/50 p-3 rounded-lg flex items-center justify-between gap-3 border border-slate-700">
+            <div className="text-xs text-slate-300 truncate font-mono select-all flex-1">
+              {`${window.location.origin}/watchlist/${user.id}?name=${encodeURIComponent(user.name || "User")}&movies=${(watchlist || []).map((m) => m.id).join(",")}`}
+            </div>
+            <button
+              onClick={handleCopyLink}
+              className="flex-shrink-0 bg-slate-700 hover:bg-slate-600 text-white p-2 rounded-lg transition-colors duration-200"
+            >
+              {copied ? (
+                <Check className="w-4 h-4 text-green-400" />
+              ) : (
+                <Copy className="w-4 h-4" />
+              )}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Sign Out Button */}

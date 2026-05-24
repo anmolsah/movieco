@@ -105,6 +105,13 @@ const MovieCard = ({
           </span>
         </div>
 
+        {/* Adult Content Badge */}
+        {movie.adult && (
+          <div className="absolute top-1 sm:top-3 left-14 sm:left-16 bg-red-600/95 backdrop-blur-sm px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full flex items-center gap-1 text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider border border-red-500/30">
+            18+
+          </div>
+        )}
+
         {/* Watchlist Button - Smaller on mobile */}
         <button
           onClick={handleWatchlistClick}

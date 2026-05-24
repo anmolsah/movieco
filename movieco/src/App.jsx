@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import WatchlistService from "./services/watchlistService.js";
+import MovieService from "./services/movieService.js";
 import {
   Sparkles,
   TrendingUp,
@@ -41,6 +43,101 @@ function App() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showAIBot, setShowAIBot] = useState(false);
+
+  // Shared Watchlist State
+  const [sharedUserId, setSharedUserId] = useState(null);
+  const [sharedWatchlist, setSharedWatchlist] = useState([]);
+  const [sharedUserName, setSharedUserName] = useState("");
+  const [sharedLoading, setSharedLoading] = useState(false);
+  const [sharedError, setSharedError] = useState(null);
+
+  // Check URL for shared watchlist on mount
+  useEffect(() => {
+    const getSharedUserIdFromUrl = () => {
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      const searchParams = new URLSearchParams(window.location.search);
+      
+      if (searchParams.has("watchlist")) {
+        return searchParams.get("watchlist");
+      }
+      
+      const pathMatch = path.match(/\/watchlist\/([^/]+)/);
+      if (pathMatch) {
+        return pathMatch[1];
+      }
+      
+      const hashMatch = hash.match(/#\/watchlist\/([^/]+)/) || hash.match(/#watchlist=([^/]+)/);
+      if (hashMatch) {
+        return hashMatch[1];
+      }
+      
+      return null;
+    };
+
+    const targetUserId = getSharedUserIdFromUrl();
+    if (targetUserId) {
+      setSharedUserId(targetUserId);
+      setActiveTab("shared-watchlist");
+    }
+  }, []);
+
+  // Fetch shared watchlist details
+  useEffect(() => {
+    if (activeTab === "shared-watchlist" && sharedUserId) {
+      const loadSharedWatchlist = async () => {
+        setSharedLoading(true);
+        setSharedError(null);
+        try {
+          const searchParams = new URLSearchParams(window.location.search);
+          const nameParam = searchParams.get("name");
+          const movieIdsStr = searchParams.get("movies");
+          
+          if (nameParam) {
+            setSharedUserName(decodeURIComponent(nameParam));
+          } else {
+            setSharedUserName("User");
+          }
+          
+          if (movieIdsStr) {
+            const ids = movieIdsStr.split(",").map(Number).filter(Boolean);
+            if (ids.length > 0) {
+              const movieDetails = await Promise.all(
+                ids.map(async (id) => {
+                  try {
+                    return await MovieService.getMovieDetails(id);
+                  } catch (e) {
+                    return null;
+                  }
+                })
+              );
+              setSharedWatchlist(movieDetails.filter(Boolean));
+            } else {
+              setSharedWatchlist([]);
+            }
+          } else {
+            // Fallback to database check in case they open a raw database path
+            const shareStatus = await WatchlistService.getWatchlistShareStatus(sharedUserId);
+            if (!shareStatus.isShared) {
+              setSharedError("This user's watchlist is private or does not exist.");
+              setSharedLoading(false);
+              return;
+            }
+            
+            setSharedUserName(shareStatus.userName || "User");
+            const movies = await WatchlistService.getUserWatchlist(sharedUserId);
+            setSharedWatchlist(movies);
+          }
+        } catch (err) {
+          setSharedError("Failed to load shared watchlist. Please try again.");
+        } finally {
+          setSharedLoading(false);
+        }
+      };
+      
+      loadSharedWatchlist();
+    }
+  }, [activeTab, sharedUserId]);
 
   // Custom Hooks
   const { user, isAuthenticated, checkAuthForWatchlist } = useAuth();
@@ -120,6 +217,86 @@ function App() {
   };
 
   const renderContent = () => {
+    if (activeTab === "shared-watchlist") {
+      return (
+        <div className="container mx-auto px-3 sm:px-6 max-w-7xl py-12">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 border-b border-slate-700 pb-6">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <span className="bg-purple-600/20 text-purple-400 text-xs px-2.5 py-1 rounded-full border border-purple-500/20 font-semibold tracking-wider uppercase">
+                  Shared Watchlist
+                </span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+                {sharedUserName ? `${sharedUserName}'s Movie Picks` : "Watchlist Picks"}
+              </h2>
+              <p className="text-slate-400 mt-2 text-sm sm:text-base">
+                Discover the movies handpicked by {sharedUserName || "your friend"}.
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                setSharedUserId(null);
+                setSharedUserName("");
+                setSharedWatchlist([]);
+                setSharedError(null);
+                setActiveTab("home");
+                window.history.pushState({}, "", "/");
+              }}
+              className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-5 py-2.5 rounded-xl font-medium transition-all duration-200 self-start md:self-auto"
+            >
+              ← Back to Home
+            </button>
+          </div>
+
+          {/* Content Loading / Error / Empty States */}
+          {sharedLoading ? (
+            <div className="flex flex-col items-center justify-center py-20">
+              <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+              <p className="text-slate-400">Loading shared watchlist...</p>
+            </div>
+          ) : sharedError ? (
+            <div className="text-center py-16 bg-slate-800/20 rounded-2xl border border-slate-700/50 max-w-xl mx-auto p-6">
+              <h3 className="text-xl font-semibold text-red-400 mb-3">Unable to Load Watchlist</h3>
+              <p className="text-slate-400 mb-6">{sharedError}</p>
+              <button
+                onClick={() => {
+                  setSharedUserId(null);
+                  setSharedUserName("");
+                  setSharedWatchlist([]);
+                  setSharedError(null);
+                  setActiveTab("home");
+                  window.history.pushState({}, "", "/");
+                }}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 rounded-xl font-semibold transition-all"
+              >
+                Go to Home
+              </button>
+            </div>
+          ) : sharedWatchlist.length === 0 ? (
+            <div className="text-center py-20 bg-slate-800/10 rounded-2xl border border-slate-700/30">
+              <p className="text-slate-400 text-lg mb-4">This watchlist is currently empty.</p>
+              <p className="text-slate-500 text-sm">Add some movies to your own watchlist to share them!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+              {sharedWatchlist.map((movie) => (
+                <MovieCard
+                  key={movie.id}
+                  movie={movie}
+                  onMovieClick={handleMovieClick}
+                  onAddToWatchlist={handleWatchlistAction}
+                  isInWatchlist={watchlist.some((w) => w.id === movie.id)}
+                  onAuthRequired={checkAuthForWatchlist}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+
     if (activeTab === "home") {
       return (
         <div className="space-y-12">

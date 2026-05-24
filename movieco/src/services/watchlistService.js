@@ -22,12 +22,13 @@ class WatchlistService {
         return [];
       }
 
-
-      return data.map((item) => ({
-        ...item.movie_data,
-        watchlist_id: item.id,
-        added_at: item.added_at,
-      }));
+      return data
+        .filter((item) => item.movie_id !== 0)
+        .map((item) => ({
+          ...item.movie_data,
+          watchlist_id: item.id,
+          added_at: item.added_at,
+        }));
     } catch (error) {
       return [];
     }
@@ -121,7 +122,8 @@ class WatchlistService {
       const { count, error } = await supabase
         .from(this.tableName)
         .select("*", { count: "exact", head: true })
-        .eq("user_id", userId);
+        .eq("user_id", userId)
+        .neq("movie_id", 0);
 
       if (error) {
         return 0;
@@ -165,17 +167,20 @@ class WatchlistService {
         .select("*")
         .eq("user_id", userId)
         .order("added_at", { ascending: false })
-        .limit(limit);
+        .limit(limit + 1);
 
       if (error) {
         return [];
       }
 
-      return data.map((item) => ({
-        ...item.movie_data,
-        watchlist_id: item.id,
-        added_at: item.added_at,
-      }));
+      return data
+        .filter((item) => item.movie_id !== 0)
+        .slice(0, limit)
+        .map((item) => ({
+          ...item.movie_data,
+          watchlist_id: item.id,
+          added_at: item.added_at,
+        }));
     } catch (error) {
       return [];
     }
@@ -204,6 +209,70 @@ class WatchlistService {
       }
     } catch (error) {
       // Watchlist sync error
+    }
+  }
+
+  async setWatchlistShareStatus(userId, userName, isShared) {
+    try {
+      if (!userId) {
+        throw new Error("User must be authenticated");
+      }
+      if (isShared) {
+        const { error } = await supabase
+          .from(this.tableName)
+          .upsert({
+            user_id: userId,
+            movie_id: 0,
+            movie_data: { isShared: true, userName },
+          }, {
+            onConflict: "user_id,movie_id"
+          });
+        if (error) {
+          console.error("Supabase upsert share status error:", error);
+          throw error;
+        }
+      } else {
+        const { error } = await supabase
+          .from(this.tableName)
+          .delete()
+          .eq("user_id", userId)
+          .eq("movie_id", 0);
+        if (error) {
+          console.error("Supabase delete share status error:", error);
+          throw error;
+        }
+      }
+      return true;
+    } catch (error) {
+      console.error("setWatchlistShareStatus error:", error);
+      return false;
+    }
+  }
+
+  async getWatchlistShareStatus(userId) {
+    try {
+      if (!userId) return { isShared: false };
+
+      const { data, error } = await supabase
+        .from(this.tableName)
+        .select("movie_data")
+        .eq("user_id", userId)
+        .eq("movie_id", 0)
+        .single();
+
+      if (error) {
+        console.error("Supabase get share status error:", error);
+        return { isShared: false };
+      }
+
+      if (!data) {
+        return { isShared: false };
+      }
+
+      return data.movie_data || { isShared: false };
+    } catch (error) {
+      console.error("getWatchlistShareStatus error:", error);
+      return { isShared: false };
     }
   }
 }

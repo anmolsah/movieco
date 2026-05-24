@@ -16,15 +16,22 @@ export const useAIRecommendations = (
   });
 
   useEffect(() => {
-    if (isAuthenticated && user) {
-      const prefs = AuthService.getUserPreferences();
-      setUserPreferences((prev) => ({
-        ...prev,
-        genres: prefs.favoriteGenres || [],
-        minRating: 6.0,
-        adultContent: prefs.adultContent || false,
-      }));
-    }
+    const handleUpdate = () => {
+      if (isAuthenticated && user) {
+        const prefs = AuthService.getUserPreferences();
+        setUserPreferences((prev) => ({
+          ...prev,
+          genres: prefs.favoriteGenres || [],
+          minRating: 6.0,
+          adultContent: prefs.adultContent || false,
+        }));
+      }
+    };
+
+    handleUpdate();
+
+    const unsubscribe = AuthService.onAuthStateChanged(handleUpdate);
+    return unsubscribe;
   }, [user, isAuthenticated]);
 
   useEffect(() => {
